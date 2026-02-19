@@ -1,0 +1,138 @@
+// ============================================================================
+// Prisma Schema for Taiwan Health Management CMS
+// ============================================================================
+// 
+// Architecture Decisions:
+// 1. Using PostgreSQL for robust JSON support (for Tiptap content and CMS config)
+// 2. Soft delete patterns can be added via deletedAt field if needed
+// 3. JSON fields are typed in shared-types package for type safety
+// 4. Indexes on frequently queried fields (slug, isPublished, order)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// User Model - Admin users for CMS management
+// ============================================================================
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  role      UserRole @default(EDITOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  articles Article[] @relation("ArticleAuthor")
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+// ============================================================================
+// Article Model - 運動專欄 (Sports Column)
+// ============================================================================
+model Article {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  content         Json     // Tiptap JSON content
+  coverImage      String?
+  metaDescription String?  @db.VarChar(160) // SEO meta description
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  authorId String?
+  author   User?   @relation("ArticleAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([createdAt])
+  @@map("articles")
+}
+
+// ============================================================================
+// HomeSection Model - CMS-driven homepage sections
+// ============================================================================
+model HomeSection {
+  id        String   @id @default(uuid())
+  type      String   // banner, carousel, features, testimonials, cta, services
+  config    Json     // Section-specific configuration (typed in shared-types)
+  order     Int      // Display order (lower = higher priority)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("home_sections")
+}
+
+// ============================================================================
+// Event Model - 活動花絮 (Event Highlights)
+// ============================================================================
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  date        DateTime
+  location    String
+  images      Json     // Array of image URLs
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([date])
+  @@map("events")
+}
+
+// ============================================================================
+// ContactSubmission Model - 聯絡我們 form submissions
+// ============================================================================
+model ContactSubmission {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("contact_submissions")
+}
+
+// ============================================================================
+// SiteSettings Model - Global site configuration
+// ============================================================================
+model SiteSettings {
+  id        String   @id @default("default")
+  siteName  String   @default("台灣健康管理")
+  logo      String?
+  favicon   String?
+  footer    Json?    // Footer configuration
+  social    Json?    // Social media links
+  contact   Json?    // Contact information
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
