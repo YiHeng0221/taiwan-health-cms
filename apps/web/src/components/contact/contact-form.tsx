@@ -53,7 +53,7 @@ export function ContactForm() {
   if (submitted) {
     return (
       <div className="text-center py-12">
-        <CheckCircle className="h-16 w-16 text-primary-600 mx-auto mb-4" />
+        <CheckCircle className="h-16 w-16 text-brand-yellow mx-auto mb-4" />
         <h3 className="text-xl font-semibold mb-2">感謝您的來信！</h3>
         <p className="text-gray-600 mb-6">我們已收到您的訊息，會盡快回覆您。</p>
         <button
@@ -115,7 +115,7 @@ export function ContactForm() {
             type="tel"
             {...register('phone')}
             className={cn('input', errors.phone && 'input-error')}
-            placeholder="02-1234-5678"
+            placeholder="0912-345-678"
           />
           {errors.phone && (
             <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -176,7 +176,7 @@ export function ContactForm() {
             發送中...
           </>
         ) : (
-          '發送訊息'
+          <span className='text-white'>發送訊息</span>
         )}
       </button>
     </form>

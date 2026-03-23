@@ -13,28 +13,28 @@ export const metadata: Metadata = {
 
 const contactInfo = [
   {
-    icon: Phone,
-    title: '電話',
-    content: '02-1234-5678',
-    description: '週一至週五 09:00-18:00',
+    icon: Mail,
+    title: '電子信箱',
+    content: 'leyisheng2024@gmail.com',
+    description: '我們會盡快回覆您',
   },
   {
-    icon: Mail,
-    title: '電子郵件',
-    content: 'contact@taiwanhealth.com',
-    description: '我們會在24小時內回覆',
+    icon: Phone,
+    title: '官方 Line',
+    content: 'Line 官方帳號',
+    description: 'https://lin.ee/XMXaiyN',
   },
   {
     icon: MapPin,
-    title: '地址',
-    content: '台北市信義區健康路100號',
-    description: '捷運信義線市政府站步行5分鐘',
+    title: '社群媒體',
+    content: 'Facebook / Instagram',
+    description: '樂頤生健康管理企業社 | @leyisheng_health',
   },
   {
     icon: Clock,
     title: '營業時間',
-    content: '週一至週五 09:00-18:00',
-    description: '週六 09:00-12:00',
+    content: '週一至週五',
+    description: '上午九點至下午六點',
   },
 ];
 
@@ -59,8 +59,8 @@ export default function ContactPage() {
                 const Icon = info.icon;
                 return (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-6 w-6 text-primary-600" />
+                    <div className="w-12 h-12 bg-brand-yellow/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-6 w-6 text-brand-yellow" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">{info.title}</h3>
@@ -70,11 +70,6 @@ export default function ContactPage() {
                   </div>
                 );
               })}
-            </div>
-
-            {/* Map placeholder */}
-            <div className="mt-8 h-64 bg-gray-100 rounded-xl flex items-center justify-center">
-              <span className="text-gray-400">Google Maps 嵌入區域</span>
             </div>
           </div>
 

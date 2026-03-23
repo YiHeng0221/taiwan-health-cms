@@ -9,7 +9,7 @@ import { ContactSubmission } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(dto: CreateContactDto): Promise<ContactSubmission> {
     return this.prisma.contactSubmission.create({
@@ -27,6 +27,12 @@ export class ContactService {
     return this.prisma.contactSubmission.update({
       where: { id },
       data: { isRead: true },
+    });
+  }
+
+  async remove(id: string): Promise<ContactSubmission> {
+    return this.prisma.contactSubmission.delete({
+      where: { id },
     });
   }
 }

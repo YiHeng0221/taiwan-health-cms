@@ -2,7 +2,7 @@
  * @fileoverview Contact Controller
  */
 
-import { Controller, Get, Post, Body, Param, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -10,7 +10,7 @@ import { Public } from '../../common/decorators';
 
 @Controller('contact')
 export class ContactController {
-  constructor(private readonly contactService: ContactService) {}
+  constructor(private readonly contactService: ContactService) { }
 
   /**
    * POST /api/contact
@@ -41,5 +41,15 @@ export class ContactController {
   @Patch(':id/read')
   async markAsRead(@Param('id') id: string) {
     return this.contactService.markAsRead(id);
+  }
+
+  /**
+   * DELETE /api/contact/:id
+   */
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.contactService.remove(id);
+    return { message: '訊息已刪除' };
   }
 }
