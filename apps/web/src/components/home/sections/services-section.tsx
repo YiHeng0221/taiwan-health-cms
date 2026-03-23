@@ -1,24 +1,17 @@
 /**
  * @fileoverview Services Section Component
+ * 
+ * Image cards with title and arrow, matching the mockup design.
  */
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { HomeSection, ServicesConfig } from '@taiwan-health/shared-types';
-import { Heart, Activity, Leaf, Users, Dumbbell, Stethoscope } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface Props {
   section: HomeSection;
 }
-
-// Icon map
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  heart: Heart,
-  activity: Activity,
-  leaf: Leaf,
-  users: Users,
-  dumbbell: Dumbbell,
-  stethoscope: Stethoscope,
-};
 
 export function ServicesSection({ section }: Props) {
   const config = section.config as ServicesConfig;
@@ -26,26 +19,41 @@ export function ServicesSection({ section }: Props) {
   return (
     <section className="py-16">
       <div className="container-custom">
-        <h2 className="section-title text-center">{config.title}</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <h2 className="text-2xl font-bold text-brand-brown">{config.title}</h2>
+          <span className="inline-block w-8 h-1 bg-brand-yellow rounded-full" />
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          {config.items.map((item, index) => {
-            const Icon = iconMap[item.icon] || Heart;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {config.items.map((item, index) => (
+            <Link
+              key={index}
+              href={item.link}
+              className="group block rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+            >
+              {/* Image */}
+              <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-contain group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-brand-brown/10 flex items-center justify-center">
+                    <span className="text-brand-brown/30 text-4xl">📷</span>
+                  </div>
+                )}
+              </div>
 
-            return (
-              <Link
-                key={index}
-                href={item.link}
-                className="card p-6 hover:shadow-lg transition-shadow group"
-              >
-                <div className="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary-600 transition-colors">
-                  <Icon className="h-7 w-7 text-primary-600 group-hover:text-white transition-colors" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
-              </Link>
-            );
-          })}
+              {/* Title + Arrow */}
+              <div className="p-4 flex items-center justify-between">
+                <h3 className="font-semibold text-brand-dark">{item.title}</h3>
+                <ArrowRight className="h-5 w-5 text-brand-brown group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
