@@ -14,13 +14,14 @@ import { ServicesSection } from './sections/services-section';
 import { CtaSection } from './sections/cta-section';
 
 // Section component map
-const sectionComponents: Record<HomeSectionType, React.ComponentType<{ section: HomeSection }>> = {
+const sectionComponents: Record<string, React.ComponentType<{ section: HomeSection }>> = {
   banner: BannerSection,
   carousel: CarouselSection,
   services: ServicesSection,
   cta: CtaSection,
-  features: ServicesSection, // Reuse services for features
-  testimonials: CtaSection, // Placeholder
+  contact_cta: CtaSection,
+  features: ServicesSection,
+  testimonials: CtaSection,
 };
 
 export function HomeSections() {
@@ -53,7 +54,7 @@ export function HomeSections() {
   return (
     <div>
       {sections.map((section) => {
-        const Component = sectionComponents[section.type as HomeSectionType];
+        const Component = sectionComponents[section.type];
         if (!Component) return null;
         return <Component key={section.id} section={section} />;
       })}

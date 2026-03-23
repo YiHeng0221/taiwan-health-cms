@@ -1,14 +1,17 @@
 /**
  * @fileoverview Carousel Section Component
+ *
+ * Generic carousel used for 活動花絮, 合作經驗, etc.
+ * Infinite loop with center active item. Following embla-carousel demo pattern.
  */
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 import { HomeSection, CarouselConfig } from '@taiwan-health/shared-types';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
   section: HomeSection;
@@ -16,97 +19,116 @@ interface Props {
 
 export function CarouselSection({ section }: Props) {
   const config = section.config as CarouselConfig;
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Auto-play
+  const autoplayRef = useRef(
+    Autoplay({ delay: config.interval || 5000, stopOnInteraction: false }),
+  );
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    config.autoplay ? [autoplayRef.current] : [],
+  );
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const onDotButtonClick = useCallback(
+    (index: number) => {
+      if (!emblaApi) return;
+      emblaApi.scrollTo(index);
+    },
+    [emblaApi],
+  );
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
   useEffect(() => {
-    if (!config.autoplay || config.items.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % config.items.length);
-    }, config.interval || 5000);
-
-    return () => clearInterval(interval);
-  }, [config.autoplay, config.interval, config.items.length]);
-
-  const goTo = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  const goPrev = () => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? config.items.length - 1 : prev - 1
-    );
-  };
-
-  const goNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % config.items.length);
-  };
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', () => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+      onSelect();
+    });
+    onSelect();
+  }, [emblaApi, onSelect]);
 
   if (config.items.length === 0) return null;
 
-  return (
-    <section className="py-12 bg-gray-50">
-      <div className="container-custom">
-        <div className="relative">
-          {/* Slides */}
-          <div className="overflow-hidden rounded-xl">
-            <div
-              className="flex transition-transform duration-500"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-            >
-              {config.items.map((item, index) => (
-                <div key={index} className="w-full flex-shrink-0">
-                  <Link href={item.url} className="block relative h-80 group">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
-                      {item.description && (
-                        <p className="text-white/80">{item.description}</p>
-                      )}
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
+  const currentItem = config.items[selectedIndex];
 
-          {/* Navigation Arrows */}
-          {config.items.length > 1 && (
-            <>
-              <button
-                onClick={goPrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg"
+  return (
+    <section className="py-16">
+      <div className="container-custom">
+        {/* Section Title */}
+        <div className="flex items-center gap-3 mb-8">
+          <h2 className="text-2xl font-bold text-brand-brown">{config.title}</h2>
+          <span className="inline-block w-8 h-1 bg-brand-yellow rounded-full" />
+        </div>
+      </div>
+
+      {/* Embla — follows demo structure exactly */}
+      <div className="embla">
+        <div className="embla__viewport overflow-hidden" ref={emblaRef}>
+          <div className="embla__container flex">
+            {config.items.map((item, index) => (
+              <div
+                key={index}
+                className="embla__slide"
+                style={{
+                  flex: '0 0 50%',
+                  minWidth: 0,
+                  paddingLeft: '1rem',
+                }}
               >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button
-                onClick={goNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </>
+                {/* Inner content — scale/opacity here, not on slide itself */}
+                <div
+                  className="transition-[transform,opacity] duration-300 origin-center"
+                  style={{
+                    transform: index === selectedIndex ? 'scale(1)' : 'scale(0.88)',
+                    opacity: index === selectedIndex ? 1 : 0.4,
+                  }}
+                >
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.title || config.title}
+                        fill
+                        className="object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-brand-brown/10 rounded-2xl" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="container-custom">
+          {/* Item title (if present) */}
+          {currentItem?.title && (
+            <p className="text-center text-brand-dark mt-6 text-sm md:text-base leading-relaxed">
+              {currentItem.title}
+            </p>
           )}
 
           {/* Dots */}
-          {config.items.length > 1 && (
+          {scrollSnaps.length > 1 && (
             <div className="flex justify-center gap-2 mt-4">
-              {config.items.map((_, index) => (
+              {scrollSnaps.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => goTo(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentIndex
-                      ? 'bg-primary-600'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
+                  onClick={() => onDotButtonClick(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${index === selectedIndex
+                    ? 'bg-brand-dark'
+                    : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
                 />
               ))}
             </div>
