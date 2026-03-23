@@ -32,7 +32,7 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
           2: 'text-2xl font-bold mb-3 mt-6',
           3: 'text-xl font-semibold mb-2 mt-4',
         }[level as 1 | 2 | 3] || 'text-lg font-semibold mb-2';
-        
+
         return (
           <Tag key={key} className={className}>
             {node.content && renderContent(node.content)}
@@ -49,7 +49,7 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
 
       case 'text': {
         let text: React.ReactNode = node.text;
-        
+
         // Apply marks (bold, italic, link, etc.)
         if (node.marks) {
           node.marks.forEach((mark) => {
@@ -67,7 +67,7 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
                     href={mark.attrs?.href as string}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary-600 hover:underline"
+                    className="text-brand-brown hover:underline"
                   >
                     {text}
                   </a>
@@ -76,7 +76,7 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
             }
           });
         }
-        
+
         return <span key={key}>{text}</span>;
       }
 
@@ -105,7 +105,7 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
         return (
           <blockquote
             key={key}
-            className="border-l-4 border-primary-500 pl-4 my-4 italic text-gray-600"
+            className="border-l-4 border-brand-yellow pl-4 my-4 italic text-gray-600"
           >
             {node.content && renderContent(node.content)}
           </blockquote>
@@ -121,9 +121,9 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
               height={450}
               className="rounded-lg w-full h-auto"
             />
-            {node.attrs?.title && (
+            {Boolean(node.attrs?.title) && (
               <figcaption className="text-center text-sm text-gray-500 mt-2">
-                {node.attrs.title as string}
+                {String(node.attrs!.title)}
               </figcaption>
             )}
           </figure>
@@ -144,7 +144,7 @@ export function ArticleContent({ article }: Props) {
       {/* Back Link */}
       <Link
         href="/articles"
-        className="inline-flex items-center text-gray-600 hover:text-primary-600 mb-8"
+        className="inline-flex items-center text-gray-600 hover:text-brand-yellow mb-8"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         返回文章列表
@@ -160,12 +160,12 @@ export function ArticleContent({ article }: Props) {
 
       {/* Cover Image */}
       {article.coverImage && (
-        <div className="relative h-96 mb-8 rounded-xl overflow-hidden">
+        <div className="relative h-96 mb-8 rounded-xl overflow-hidden bg-gray-100">
           <Image
             src={article.coverImage}
             alt={article.title}
             fill
-            className="object-cover"
+            className="object-contain"
             priority
           />
         </div>

@@ -68,7 +68,7 @@ taiwan-health-cms/
 
 - Node.js 20+
 - pnpm 9+
-- PostgreSQL 15+
+- Supabase 帳號（或本地 PostgreSQL 15+）
 
 ### 安裝
 
@@ -77,41 +77,74 @@ taiwan-health-cms/
 git clone <repository-url>
 cd taiwan-health-cms
 
+# 安裝 pnpm（如果尚未安裝）
+npm install -g pnpm
+
 # 安裝依賴
 pnpm install
 
+# 建構 shared-types 套件
+pnpm --filter @taiwan-health/shared-types build
+```
+
+### 環境變數設定
+
+```bash
 # 複製環境變數檔案
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
+```
 
-# 編輯 apps/api/.env 設定資料庫連線
-# DATABASE_URL="postgresql://user:password@localhost:5432/taiwan_health"
+編輯 `apps/api/.env`，設定 Supabase 連線（到 Supabase Dashboard > Project Settings > Database > Connection string 取得）：
+
+```env
+DATABASE_URL="postgresql://postgres.xxxxx:YOUR_PASSWORD@aws-0-region.pooler.supabase.com:5432/postgres"
+DIRECT_URL="postgresql://postgres.xxxxx:YOUR_PASSWORD@aws-0-region.pooler.supabase.com:5432/postgres"
+```
+
+或使用本地 PostgreSQL：
+
+```env
+DATABASE_URL="postgresql://postgres:password@localhost:5432/taiwan_health_cms"
+DIRECT_URL="postgresql://postgres:password@localhost:5432/taiwan_health_cms"
 ```
 
 ### 資料庫設定
 
 ```bash
 # 產生 Prisma Client
-cd apps/api
-pnpm prisma generate
+pnpm --filter api db:generate
 
-# 執行資料庫遷移
-pnpm prisma migrate dev
+# 同步 Schema 到資料庫
+pnpm --filter api db:push
 
-# 執行種子資料
-pnpm prisma db seed
+# （選用）執行種子資料
+pnpm --filter api db:seed
 ```
 
 ### 啟動開發伺服器
+
+#### 方法一：同時啟動前後端
 
 ```bash
 # 在專案根目錄
 pnpm dev
 ```
 
-這會同時啟動：
-- 前端: http://localhost:3000
-- 後端: http://localhost:4000
+#### 方法二：分別啟動
+
+```bash
+# 啟動後端 API（Port 4000）
+pnpm --filter api dev
+
+# 啟動前端網站（Port 3000）- 在另一個終端
+pnpm --filter web dev
+```
+
+啟動後：
+- **前端網站**: http://localhost:3000
+- **後端 API**: http://localhost:4000/api
+- **管理後台**: http://localhost:3000/admin
 
 ### 建構專案
 

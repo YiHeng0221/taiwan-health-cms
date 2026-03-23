@@ -8,7 +8,7 @@ import { FileText, Image, Calendar, Mail, Home, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: '管理後台',
-  description: '台灣健康管理 CMS 管理後台',
+  description: '樂頤生健康管理 CMS 管理後台',
 };
 
 const quickLinks = [
@@ -62,8 +62,8 @@ export default function AdminDashboardPage() {
                   <h2 className="font-semibold mb-1">{link.title}</h2>
                   <p className="text-sm text-gray-500">{link.description}</p>
                 </div>
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-primary-600" />
+                <div className="w-10 h-10 bg-brand-yellow/10 rounded-lg flex items-center justify-center">
+                  <Icon className="h-5 w-5 text-brand-yellow" />
                 </div>
               </div>
             </Link>

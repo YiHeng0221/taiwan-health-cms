@@ -41,7 +41,7 @@ export default function AdminArticlesPage() {
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-brand-yellow" />
           </div>
         ) : !data?.items?.length ? (
           <div className="text-center py-12">
@@ -79,11 +79,10 @@ export default function AdminArticlesPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        article.isPublished
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${article.isPublished
                           ? 'bg-green-100 text-green-800'
                           : 'bg-yellow-100 text-yellow-800'
-                      }`}
+                        }`}
                     >
                       {article.isPublished ? '已發布' : '草稿'}
                     </span>

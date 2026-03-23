@@ -23,15 +23,15 @@
   }
 
   .btn-primary {
-    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply btn bg-brand-yellow text-brand-dark hover:brightness-95 focus:ring-brand-yellow;
   }
 
   .btn-secondary {
-    @apply btn bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500;
+    @apply btn bg-brand-brown text-brand-cream hover:brightness-90 focus:ring-brand-brown;
   }
 
   .btn-outline {
-    @apply btn border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500;
+    @apply btn border-2 border-brand-yellow text-brand-brown hover:bg-brand-yellow/10 focus:ring-brand-yellow;
   }
 
   /* Card styles */
@@ -46,7 +46,7 @@
 
   /* Form input styles */
   .input {
-    @apply w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 outline-none transition-colors;
+    @apply w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow focus:ring-opacity-20 outline-none transition-colors;
   }
 
   .input-error {
@@ -98,7 +98,7 @@
 }
 
 .tiptap-editor blockquote {
-  @apply border-l-4 border-primary-500 pl-4 italic text-gray-600;
+  @apply border-l-4 border-brand-yellow pl-4 italic text-gray-600;
 }
 
 .tiptap-editor img {
@@ -106,5 +106,5 @@
 }
 
 .tiptap-editor a {
-  @apply text-primary-600 hover:text-primary-700 underline;
+  @apply text-brand-brown hover:text-brand-yellow underline;
 }

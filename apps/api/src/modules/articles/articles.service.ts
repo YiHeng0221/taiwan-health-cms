@@ -20,7 +20,7 @@ import slugify from 'slugify';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   /**
    * Create a new article
@@ -43,8 +43,8 @@ export class ArticlesService {
       data: {
         title: dto.title,
         slug,
-        content: dto.content,
-        coverImage: dto.coverImage,
+        content: dto.content as any,
+        coverImage: dto.coverImage || this.extractFirstImage(dto.content),
         metaDescription: dto.metaDescription,
         isPublished: dto.isPublished ?? false,
         authorId,
@@ -64,7 +64,7 @@ export class ArticlesService {
 
     // Build where clause
     const where: Record<string, unknown> = {};
-    
+
     if (isPublished !== undefined) {
       where.isPublished = isPublished;
     }
@@ -157,7 +157,11 @@ export class ArticlesService {
 
     return this.prisma.article.update({
       where: { id },
-      data: dto,
+      data: {
+        ...dto,
+        content: dto.content as any,
+        coverImage: dto.coverImage || this.extractFirstImage(dto.content),
+      },
     });
   }
 
@@ -174,7 +178,7 @@ export class ArticlesService {
    */
   async togglePublish(id: string): Promise<Article> {
     const article = await this.findById(id);
-    
+
     return this.prisma.article.update({
       where: { id },
       data: { isPublished: !article.isPublished },
@@ -190,5 +194,31 @@ export class ArticlesService {
       strict: true,
       locale: 'zh-TW',
     });
+  }
+
+  /**
+   * Extract the first image URL from Tiptap JSON content.
+   * Recursively searches through nested content nodes.
+   */
+  private extractFirstImage(content: unknown): string | undefined {
+    if (!content || typeof content !== 'object') return undefined;
+
+    const node = content as Record<string, unknown>;
+
+    // Found an image node
+    if (node.type === 'image' && node.attrs) {
+      const src = (node.attrs as Record<string, unknown>).src;
+      if (typeof src === 'string') return src;
+    }
+
+    // Recurse into content array
+    if (Array.isArray(node.content)) {
+      for (const child of node.content) {
+        const found = this.extractFirstImage(child);
+        if (found) return found;
+      }
+    }
+
+    return undefined;
   }
 }

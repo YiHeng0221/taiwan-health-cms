@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: '運動專欄',
   description: '探索最新的健康與運動知識，由專業團隊為您精心撰寫的健康文章。',
   openGraph: {
-    title: '運動專欄 | 台灣健康管理',
+    title: '運動專欄 | 樂頤生健康管理',
     description: '探索最新的健康與運動知識，由專業團隊為您精心撰寫的健康文章。',
   },
 };

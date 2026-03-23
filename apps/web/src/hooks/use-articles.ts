@@ -34,9 +34,9 @@ interface ArticleListParams {
  */
 export function useArticles(params: ArticleListParams = {}) {
   return useQuery({
-    queryKey: articleKeys.list(params),
+    queryKey: articleKeys.list(params as Record<string, unknown>),
     queryFn: () =>
-      api.get<PaginatedResponse<ArticleListItem>>('/articles', params),
+      api.get<PaginatedResponse<ArticleListItem>>('/articles', params as Record<string, string | number | boolean | undefined>),
   });
 }
 
@@ -56,9 +56,9 @@ export function useArticle(slug: string) {
  */
 export function useAdminArticles(params: ArticleListParams & { isPublished?: boolean } = {}) {
   return useQuery({
-    queryKey: articleKeys.adminList(params),
+    queryKey: articleKeys.adminList(params as Record<string, unknown>),
     queryFn: () =>
-      api.get<PaginatedResponse<ArticleListItem>>('/articles/admin', params),
+      api.get<PaginatedResponse<ArticleListItem>>('/articles/admin', params as Record<string, string | number | boolean | undefined>),
   });
 }
 

@@ -29,8 +29,8 @@ export function AdminHeader() {
 
         {/* User info */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-primary-600" />
+          <div className="w-8 h-8 bg-brand-yellow/10 rounded-full flex items-center justify-center">
+            <User className="h-4 w-4 text-brand-yellow" />
           </div>
           <span className="text-sm font-medium hidden sm:inline">
             {user?.email || '管理員'}

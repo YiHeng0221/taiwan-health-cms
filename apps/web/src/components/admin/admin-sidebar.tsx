@@ -41,7 +41,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-gray-800">
         <Link href="/admin" className="text-xl font-bold">
-          台灣健康管理
+          樂頤生健康管理
         </Link>
       </div>
 
@@ -59,7 +59,7 @@ export function AdminSidebar() {
               className={cn(
                 'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
                 isActive
-                  ? 'bg-primary-600 text-white'
+                  ? 'bg-brand-yellow text-brand-dark'
                   : 'text-gray-300 hover:bg-gray-800'
               )}
             >

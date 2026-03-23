@@ -4,6 +4,7 @@
 
 'use client';
 
+import { useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -23,8 +24,10 @@ import {
   Image as ImageIcon,
   Undo,
   Redo,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useUploadImage } from '@/hooks/use-upload';
 
 interface Props {
   content: TiptapContent;
@@ -32,6 +35,9 @@ interface Props {
 }
 
 export function TiptapEditor({ content, onChange }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadImage = useUploadImage('articles');
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -43,7 +49,7 @@ export function TiptapEditor({ content, onChange }: Props) {
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-primary-600 underline',
+          class: 'text-brand-brown underline',
         },
       }),
       Placeholder.configure({
@@ -66,10 +72,22 @@ export function TiptapEditor({ content, onChange }: Props) {
   }
 
   const addImage = () => {
-    const url = prompt('輸入圖片網址：');
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const result = await uploadImage.mutateAsync(file);
+      editor.chain().focus().setImage({ src: result.url }).run();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '圖片上傳失敗');
     }
+
+    // Reset input so same file can be selected again
+    e.target.value = '';
   };
 
   const addLink = () => {
@@ -149,9 +167,22 @@ export function TiptapEditor({ content, onChange }: Props) {
           <LinkIcon className="h-4 w-4" />
         </ToolbarButton>
 
-        <ToolbarButton onClick={addImage}>
-          <ImageIcon className="h-4 w-4" />
+        <ToolbarButton onClick={addImage} disabled={uploadImage.isPending}>
+          {uploadImage.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ImageIcon className="h-4 w-4" />
+          )}
         </ToolbarButton>
+
+        {/* Hidden file input for image upload */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
 
@@ -196,7 +227,7 @@ function ToolbarButton({
       disabled={disabled}
       className={cn(
         'p-2 rounded hover:bg-gray-200 transition-colors',
-        isActive && 'bg-gray-200 text-primary-600',
+        isActive && 'bg-gray-200 text-brand-yellow',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >

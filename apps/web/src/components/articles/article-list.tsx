@@ -91,7 +91,7 @@ export function ArticleList() {
                       src={article.coverImage}
                       alt={article.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">
@@ -102,7 +102,7 @@ export function ArticleList() {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-brand-yellow transition-colors line-clamp-2">
                     {article.title}
                   </h2>
                   <p className="text-sm text-gray-500">

@@ -16,6 +16,9 @@ import { HomeSectionsModule } from './modules/home-sections/home-sections.module
 import { EventsModule } from './modules/events/events.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { UsersModule } from './modules/users/users.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { ServicesModule } from './modules/services/services.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -24,10 +27,10 @@ import { UsersModule } from './modules/users/users.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    
+
     // Database module
     PrismaModule,
-    
+
     // Feature modules
     AuthModule,
     UsersModule,
@@ -35,6 +38,9 @@ import { UsersModule } from './modules/users/users.module';
     HomeSectionsModule,
     EventsModule,
     ContactModule,
+    UploadModule,
+    ServicesModule,
+    SettingsModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

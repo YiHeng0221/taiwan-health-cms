@@ -70,7 +70,7 @@ export function ArticleEditor({ article }: Props) {
     if (isEditing) {
       await updateArticle.mutateAsync({ id: article.id, data: payload });
     } else {
-      await createArticle.mutateAsync(payload);
+      await createArticle.mutateAsync(payload as any);
     }
 
     router.push('/admin/articles');
@@ -119,7 +119,7 @@ export function ArticleEditor({ article }: Props) {
                 <input
                   type="checkbox"
                   {...register('isPublished')}
-                  className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  className="w-4 h-4 rounded border-gray-300 text-brand-yellow focus:ring-brand-yellow"
                 />
                 <span className="text-sm">立即發布</span>
               </label>

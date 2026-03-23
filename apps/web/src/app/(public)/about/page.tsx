@@ -8,7 +8,7 @@ import { Award, Target, Heart, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: '關於我們',
-  description: '台灣健康管理致力於提供專業的健康管理服務，陪伴您邁向更健康的生活。',
+  description: '樂頤生健康管理用運動改變生活，快樂頤養一生！提供專業運動指導與健康管理服務。',
 };
 
 const values = [
@@ -41,14 +41,14 @@ export default function AboutPage() {
       <section className="container-custom">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="text-4xl font-bold mb-6">關於台灣健康管理</h1>
+            <h1 className="text-4xl font-bold mb-6">關於樂頤生健康管理</h1>
             <p className="text-lg text-gray-600 mb-6">
-              台灣健康管理成立於2010年，致力於推廣預防醫學理念，
-              協助國人建立正確的健康觀念與生活習慣。
+              樂頤生健康管理致力於用運動改變生活，
+              協助大眾建立正確的運動觀念與健康生活習慣。
             </p>
             <p className="text-gray-600 mb-6">
               我們相信，健康不僅是沒有疾病，更是身心靈的完整平衡。
-              透過專業的健康評估、個人化的健康計畫，以及持續的追蹤服務，
+              透過專業的運動指導、個人化的健康計畫，以及持續的追蹤服務，
               我們陪伴每一位客戶走向更健康、更有活力的生活。
             </p>
           </div>
@@ -65,14 +65,14 @@ export default function AboutPage() {
         <div className="container-custom">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="card p-8">
-              <h2 className="text-2xl font-bold mb-4 text-primary-600">使命</h2>
+              <h2 className="text-2xl font-bold mb-4 text-brand-brown">使命</h2>
               <p className="text-gray-600">
                 透過專業、科學的健康管理服務，協助每一位客戶達成最佳健康狀態，
                 提升生活品質，實現健康長壽的目標。
               </p>
             </div>
             <div className="card p-8">
-              <h2 className="text-2xl font-bold mb-4 text-primary-600">願景</h2>
+              <h2 className="text-2xl font-bold mb-4 text-brand-brown">願景</h2>
               <p className="text-gray-600">
                 成為台灣最受信賴的健康管理品牌，引領預防醫學的發展，
                 讓每個人都能擁有健康、快樂的人生。
@@ -90,8 +90,8 @@ export default function AboutPage() {
             const Icon = value.icon;
             return (
               <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon className="h-8 w-8 text-primary-600" />
+                <div className="w-16 h-16 bg-brand-yellow/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Icon className="h-8 w-8 text-brand-yellow" />
                 </div>
                 <h3 className="font-semibold text-lg mb-2">{value.title}</h3>
                 <p className="text-sm text-gray-600">{value.description}</p>
@@ -102,7 +102,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="bg-primary-600 text-white py-16">
+      <section className="bg-brand-yellow text-brand-dark py-16">
         <div className="container-custom text-center">
           <h2 className="text-3xl font-bold mb-4">專業團隊</h2>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">

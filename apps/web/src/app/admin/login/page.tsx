@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
         <div className="bg-white rounded-xl shadow-lg p-8">
           {/* Logo */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-primary-600">台灣健康管理</h1>
+            <h1 className="text-2xl font-bold text-brand-brown">樂頤生健康管理</h1>
             <p className="text-gray-500 mt-2">管理後台登入</p>
           </div>
 
@@ -122,7 +122,7 @@ export default function AdminLoginPage() {
           {/* Demo credentials */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
             <p className="font-medium mb-1">測試帳號：</p>
-            <p>Email: admin@taiwanhealth.com</p>
+            <p>Email: admin@leyisheng.com</p>
             <p>Password: admin123</p>
           </div>
         </div>

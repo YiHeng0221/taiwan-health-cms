@@ -9,14 +9,15 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtPayload, User, AuthResponse } from '@taiwan-health/shared-types';
+import { JwtPayload, User as SharedUser, AuthResponse, UserRole } from '@taiwan-health/shared-types';
+import type { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   /**
    * Validates user credentials and returns JWT token
@@ -40,7 +41,7 @@ export class AuthService {
     const payload: Omit<JwtPayload, 'iat' | 'exp'> = {
       sub: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -51,6 +52,7 @@ export class AuthService {
     return {
       user: {
         ...userWithoutPassword,
+        role: user.role as UserRole,
         createdAt: user.createdAt,
       },
       accessToken,
@@ -60,7 +62,7 @@ export class AuthService {
   /**
    * Validates JWT token and returns user
    */
-  async validateToken(payload: JwtPayload): Promise<User | null> {
+  async validateToken(payload: JwtPayload): Promise<SharedUser | null> {
     const user = await this.usersService.findById(payload.sub);
     if (!user) {
       return null;
@@ -69,6 +71,7 @@ export class AuthService {
     const { password: _, ...userWithoutPassword } = user;
     return {
       ...userWithoutPassword,
+      role: user.role as UserRole,
       createdAt: user.createdAt,
     };
   }
@@ -76,7 +79,7 @@ export class AuthService {
   /**
    * Gets current user from token
    */
-  async getCurrentUser(userId: string): Promise<User | null> {
+  async getCurrentUser(userId: string): Promise<SharedUser | null> {
     const user = await this.usersService.findById(userId);
     if (!user) {
       return null;
@@ -85,6 +88,7 @@ export class AuthService {
     const { password: _, ...userWithoutPassword } = user;
     return {
       ...userWithoutPassword,
+      role: user.role as UserRole,
       createdAt: user.createdAt,
     };
   }

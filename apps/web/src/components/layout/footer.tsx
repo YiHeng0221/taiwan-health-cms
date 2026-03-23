@@ -1,102 +1,138 @@
 /**
  * @fileoverview Footer Component
+ *
+ * Server component — fetches site settings from backend for SEO-friendly rendering.
+ * Falls back to constants if backend is unavailable.
  */
 
-import Link from 'next/link';
-import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { getSiteSettings } from '@/lib/get-settings';
+import { COMPANY_INFO } from '@/lib/constants';
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getSiteSettings();
+
+  const contact = settings?.contact;
+  const social = settings?.social;
+  const footer = settings?.footer;
+  const email = contact?.email || COMPANY_INFO.email;
+
+  // Collect social links that have a URL
+  const socialLinks = [
+    social?.line && { label: 'LINE', ...social.line },
+    social?.facebook && { label: 'Facebook', ...social.facebook },
+    social?.instagram && { label: 'Instagram', ...social.instagram },
+    social?.youtube && { label: 'YouTube', ...social.youtube },
+  ].filter(Boolean) as { label: string; name: string; url: string }[];
+
+  const copyright =
+    footer?.copyright ||
+    `Copyright © ${new Date().getFullYear()} ${COMPANY_INFO.legalName} All rights reserved.`;
+
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-brand-brown text-brand-cream">
       <div className="container-custom py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-white">台灣健康管理</h3>
-            <p className="text-sm">
-              專業健康管理服務，為您打造最佳健康方案。
-            </p>
-            <div className="flex space-x-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary-400 transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary-400 transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold text-white mb-4">快速連結</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/services" className="hover:text-primary-400">
-                  服務項目
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-primary-400">
-                  關於我們
-                </Link>
-              </li>
-              <li>
-                <Link href="/articles" className="hover:text-primary-400">
-                  運動專欄
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-primary-400">
-                  聯絡我們
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="text-lg font-semibold text-white mb-4">服務項目</h4>
-            <ul className="space-y-2 text-sm">
-              <li>健康檢查</li>
-              <li>運動指導</li>
-              <li>營養諮詢</li>
-              <li>健康講座</li>
-            </ul>
+          <div className="space-y-3">
+            <h3 className="text-2xl font-bold">{COMPANY_INFO.name}</h3>
+            <p className="text-lg font-semibold">{COMPANY_INFO.nameEn}</p>
+            <p className="text-sm opacity-80">{COMPANY_INFO.slogan}</p>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">聯絡資訊</h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
-                <span>02-1234-5678</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
-                <span>contact@taiwanhealth.com</span>
-              </li>
-              <li className="flex items-start space-x-2">
-                <MapPin className="h-4 w-4 mt-0.5" />
-                <span>台北市信義區健康路100號</span>
-              </li>
+            <h4 className="text-lg font-semibold mb-4">聯絡我們</h4>
+            <ul className="space-y-1 text-sm">
+              {email && (
+                <li>
+                  電子信箱：
+                  <a
+                    href={`mailto:${email}`}
+                    className="underline hover:opacity-80 transition-opacity"
+                  >
+                    {email}
+                  </a>
+                </li>
+              )}
+              {contact?.phone && (
+                <li>
+                  電話：
+                  <a
+                    href={`tel:${contact.phone}`}
+                    className="underline hover:opacity-80 transition-opacity"
+                  >
+                    {contact.phone}
+                  </a>
+                </li>
+              )}
+              {contact?.address && (
+                <li>地址：{contact.address}</li>
+              )}
+            </ul>
+          </div>
+
+          {/* Social Links */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4">社群媒體</h4>
+            <ul className="space-y-1 text-sm">
+              {socialLinks.length > 0 ? (
+                socialLinks.map((link) => (
+                  <li key={link.label}>
+                    {link.label}：
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:opacity-80 transition-opacity"
+                    >
+                      {link.name || link.url}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li>
+                    LINE：
+                    <a
+                      href={COMPANY_INFO.lineUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:opacity-80 transition-opacity"
+                    >
+                      {COMPANY_INFO.lineUrl}
+                    </a>
+                  </li>
+                  <li>
+                    Facebook：
+                    <a
+                      href={COMPANY_INFO.facebookUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:opacity-80 transition-opacity"
+                    >
+                      {COMPANY_INFO.facebookName}
+                    </a>
+                  </li>
+                  <li>
+                    Instagram：
+                    <a
+                      href={COMPANY_INFO.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:opacity-80 transition-opacity"
+                    >
+                      {COMPANY_INFO.instagramHandle}
+                    </a>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-          <p>© {new Date().getFullYear()} 台灣健康管理. All rights reserved.</p>
+        <div className="border-t border-brand-cream/20 mt-8 pt-8 text-sm opacity-60">
+          <p>{copyright}</p>
         </div>
       </div>
     </footer>
