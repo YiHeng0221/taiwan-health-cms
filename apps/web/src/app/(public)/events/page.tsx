@@ -63,7 +63,7 @@ export default async function EventsPage() {
                       src={event.images[0]}
                       alt={event.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">

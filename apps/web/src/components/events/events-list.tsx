@@ -52,7 +52,7 @@ export function EventsList() {
                 src={event.images[0]}
                 alt={event.title}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             ) : (
               <div className="flex items-center justify-center h-full text-gray-400">
@@ -64,7 +64,7 @@ export function EventsList() {
           {/* Event Info */}
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-3">{event.title}</h2>
-            
+
             <div className="flex flex-col gap-2 text-sm text-gray-600 mb-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
