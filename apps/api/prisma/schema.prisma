@@ -14,8 +14,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================================================
@@ -79,6 +80,26 @@ model HomeSection {
   @@index([order])
   @@index([isActive])
   @@map("home_sections")
+}
+
+// ============================================================================
+// Service Model - 服務項目 (Service Items)
+// ============================================================================
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  icon        String   @default("activity") // lucide icon name
+  image       String?
+  features    Json     @default("[]") // string[]
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
+  @@map("services")
 }
 
 // ============================================================================

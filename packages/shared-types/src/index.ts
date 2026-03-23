@@ -120,22 +120,24 @@ export interface HomeSection {
 }
 
 /** Supported home section types */
-export type HomeSectionType = 
-  | 'banner' 
-  | 'carousel' 
-  | 'features' 
-  | 'testimonials' 
-  | 'cta' 
-  | 'services';
+export type HomeSectionType =
+  | 'banner'
+  | 'carousel'
+  | 'features'
+  | 'testimonials'
+  | 'cta'
+  | 'services'
+  | 'contact_cta';
 
 /** Union type for all section configs */
-export type HomeSectionConfig = 
-  | BannerConfig 
-  | CarouselConfig 
-  | FeaturesConfig 
-  | TestimonialsConfig 
-  | CtaConfig 
-  | ServicesConfig;
+export type HomeSectionConfig =
+  | BannerConfig
+  | CarouselConfig
+  | FeaturesConfig
+  | TestimonialsConfig
+  | CtaConfig
+  | ServicesConfig
+  | ContactCtaConfig;
 
 /** Banner section configuration */
 export interface BannerConfig {
@@ -149,16 +151,16 @@ export interface BannerConfig {
 
 /** Carousel section configuration */
 export interface CarouselConfig {
+  title: string;
   items: CarouselItem[];
   autoplay?: boolean;
   interval?: number;
 }
 
 export interface CarouselItem {
-  title: string;
-  url: string;
+  title?: string;
   image: string;
-  description?: string;
+  url?: string;
 }
 
 /** Features section configuration */
@@ -207,6 +209,37 @@ export interface ServiceItem {
   title: string;
   description: string;
   link: string;
+  image?: string;
+}
+
+/** Contact CTA section – email input + button on yellow background */
+export interface ContactCtaConfig {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  buttonText: string;
+  buttonLink: string;
+  emailPlaceholder?: string;
+}
+
+
+
+// ============================================================================
+// Service Types (服務項目)
+// ============================================================================
+
+/** Service entity from database */
+export interface ServiceEntity {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  image: string | null;
+  features: string[];
+  order: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // ============================================================================

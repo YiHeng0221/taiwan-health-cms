@@ -17,7 +17,7 @@ async function main() {
 
   // Create default admin user
   const hashedPassword = await bcrypt.hash('admin123', 12);
-  
+
   const admin = await prisma.user.upsert({
     where: { email: 'admin@taiwanhealth.com' },
     update: {},
@@ -29,42 +29,49 @@ async function main() {
   });
   console.log('✅ 管理員帳號已建立:', admin.email);
 
-  // Create sample home sections
+  // Clear existing home sections before re-seeding
+  await prisma.homeSection.deleteMany();
+  console.log('🗑️  舊首頁區塊已清除');
+
+  // Create sample home sections (matching mockup design)
   const homeSections = [
     {
       type: 'banner',
       config: {
-        title: '專業健康管理服務',
-        subtitle: '為您打造最佳健康方案',
-        image: '/images/banner-health.jpg',
+        title: '樂頤生健康管理',
+        subtitle: 'Health Management',
+        image: '',
         animation: 'fadein',
-        buttonText: '了解更多',
-        buttonLink: '/services',
+        buttonText: '聯絡我們',
+        buttonLink: '/contact',
       },
       order: 1,
     },
     {
       type: 'services',
       config: {
-        title: '我們的服務',
+        title: '服務項目',
         items: [
           {
-            icon: 'heart',
-            title: '健康檢查',
-            description: '全面性健康評估與追蹤',
-            link: '/services#health-check',
+            icon: 'users',
+            title: '特殊族群個別指導',
+            description: '針對特殊族群提供個別化運動指導',
+            link: '/services#special',
+            image: '',
           },
           {
             icon: 'activity',
-            title: '運動指導',
-            description: '客製化運動計畫',
-            link: '/services#fitness',
+            title: '團體運動指導',
+            description: '專業團體運動課程指導',
+            link: '/services#group',
+            image: '',
           },
           {
-            icon: 'leaf',
-            title: '營養諮詢',
-            description: '專業營養師一對一諮詢',
-            link: '/services#nutrition',
+            icon: 'dumbbell',
+            title: '個人運動指導',
+            description: '一對一客製化運動指導',
+            link: '/services#personal',
+            image: '',
           },
         ],
       },
@@ -73,18 +80,22 @@ async function main() {
     {
       type: 'carousel',
       config: {
+        title: '活動花絮',
         items: [
           {
-            title: '2024 健康講座',
-            url: '/events/health-seminar-2024',
-            image: '/images/event-1.jpg',
-            description: '專家分享最新健康趨勢',
+            title: '社區活動',
+            image: '',
+            url: '/events',
           },
           {
-            title: '社區運動日',
-            url: '/events/community-sports-day',
-            image: '/images/event-2.jpg',
-            description: '一起動起來，享受運動樂趣',
+            title: '團體課程',
+            image: '',
+            url: '/events',
+          },
+          {
+            title: '個別指導',
+            image: '',
+            url: '/events',
           },
         ],
         autoplay: true,
@@ -95,12 +106,36 @@ async function main() {
     {
       type: 'cta',
       config: {
-        title: '立即預約諮詢',
-        description: '讓我們的專業團隊為您服務',
+        title: '守護健康，從今天開始！\n立即與我們聯絡',
+        description: '想讓追尋更健康、更有活力嗎？\n現在就預約諮詢，讓我們陪您一起打造高品質、無憂的樂齡生活。',
         buttonText: '聯絡我們',
         buttonLink: '/contact',
+        emailPlaceholder: '輸入您的 E-mail',
       },
       order: 4,
+    },
+    {
+      type: 'carousel',
+      config: {
+        title: '合作經驗',
+        items: [
+          {
+            title: '社區年度嘉年華盛事！！！耀輝社區與六份社區聯合舉辦家庭據點日，凝聚團結有力的社區力量！！！',
+            image: '',
+          },
+          {
+            title: '與在地社區合作推廣健康促進活動',
+            image: '',
+          },
+          {
+            title: '企業健康管理合作方案',
+            image: '',
+          },
+        ],
+        autoplay: true,
+        interval: 5000,
+      },
+      order: 5,
     },
   ];
 
@@ -110,6 +145,36 @@ async function main() {
   console.log('✅ 首頁區塊已建立');
 
   // Create sample articles
+  // Seed services
+  await prisma.service.deleteMany();
+  const serviceItems = [
+    {
+      title: '特殊族群個別指導',
+      description: '針對銀髮族、孕產婦、慢性病患者等特殊族群，提供安全且有效的個別化運動指導方案。',
+      icon: 'users',
+      features: ['個別化體能評估', '安全運動處方', '慢性病運動管理', '定期追蹤調整'],
+      order: 1,
+    },
+    {
+      title: '團體運動指導',
+      description: '專業教練帶領的小班制團體運動課程，兼顧社交互動與運動效果。',
+      icon: 'activity',
+      features: ['小班制教學', '多元課程選擇', '社區據點合作', '企業團體方案'],
+      order: 2,
+    },
+    {
+      title: '個人運動指導',
+      description: '一對一客製化運動指導，根據個人目標與身體狀況量身打造訓練計畫。',
+      icon: 'dumbbell',
+      features: ['體能評估', '個人化課表', '一對一指導', '進度追蹤'],
+      order: 3,
+    },
+  ];
+  for (const item of serviceItems) {
+    await prisma.service.create({ data: item });
+  }
+  console.log('✅ 服務項目已建立');
+
   const articles = [
     {
       title: '如何建立健康的生活習慣',
@@ -168,7 +233,11 @@ async function main() {
   ];
 
   for (const article of articles) {
-    await prisma.article.create({ data: article });
+    await prisma.article.upsert({
+      where: { slug: article.slug },
+      update: {},
+      create: article,
+    });
   }
   console.log('✅ 範例文章已建立');
 
@@ -195,7 +264,11 @@ async function main() {
   ];
 
   for (const event of events) {
-    await prisma.event.create({ data: event });
+    await prisma.event.upsert({
+      where: { slug: event.slug },
+      update: {},
+      create: event,
+    });
   }
   console.log('✅ 範例活動已建立');
 
