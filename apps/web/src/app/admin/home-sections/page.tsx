@@ -73,7 +73,7 @@ function SortableRow({ section, index, onDelete, isDeleting }: SortableRowProps)
     position: 'relative' as const,
   };
 
-  const config = section.config as Record<string, unknown>;
+  const config = section.config as unknown as Record<string, unknown>;
   const isActive = (section as Record<string, unknown>).isActive !== false;
 
   return (
