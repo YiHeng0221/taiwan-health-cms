@@ -74,7 +74,7 @@ function SortableRow({ section, index, onDelete, isDeleting }: SortableRowProps)
   };
 
   const config = section.config as unknown as Record<string, unknown>;
-  const isActive = (section as Record<string, unknown>).isActive !== false;
+  const isActive = (section as unknown as Record<string, unknown>).isActive !== false;
 
   return (
     <div
