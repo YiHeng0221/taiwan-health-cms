@@ -8,6 +8,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { adminPath } from '@/lib/admin-path';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -73,7 +74,7 @@ export function ArticleEditor({ article }: Props) {
       await createArticle.mutateAsync(payload as any);
     }
 
-    router.push('/admin/articles');
+    router.push(adminPath('/articles'));
   };
 
   const isSubmitting = createArticle.isPending || updateArticle.isPending;

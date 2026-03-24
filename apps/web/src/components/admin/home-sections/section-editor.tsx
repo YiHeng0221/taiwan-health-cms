@@ -11,6 +11,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { adminPath } from '@/lib/admin-path';
 import {
   HomeSectionType,
   HomeSectionConfig,
@@ -78,7 +79,7 @@ export function SectionEditor({ section }: Props) {
           isActive,
         });
       }
-      router.push('/admin/home-sections');
+      router.push(adminPath('/home-sections'));
     } catch (err) {
       // error handled by mutation
     }
@@ -90,7 +91,7 @@ export function SectionEditor({ section }: Props) {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push('/admin/home-sections')}
+            onClick={() => router.push(adminPath('/home-sections'))}
             className="p-2 hover:bg-gray-100 rounded-lg"
           >
             <ArrowLeft className="h-5 w-5" />

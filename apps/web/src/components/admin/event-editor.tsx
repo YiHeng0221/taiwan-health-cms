@@ -8,6 +8,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { adminPath } from '@/lib/admin-path';
 import Image from 'next/image';
 import { useCreateEvent, useUpdateEvent } from '@/hooks/use-events';
 import { useUploadImage } from '@/hooks/use-upload';
@@ -104,7 +105,7 @@ export function EventEditor({ initialData }: EventEditorProps) {
       } else {
         await createEvent.mutateAsync(form);
       }
-      router.push('/admin/events');
+      router.push(adminPath('/events'));
     } catch (err) {
       console.error('Save failed:', err);
     }
@@ -266,7 +267,7 @@ export function EventEditor({ initialData }: EventEditorProps) {
         </button>
         <button
           type="button"
-          onClick={() => router.push('/admin/events')}
+          onClick={() => router.push(adminPath('/events'))}
           className="px-6 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
         >
           取消

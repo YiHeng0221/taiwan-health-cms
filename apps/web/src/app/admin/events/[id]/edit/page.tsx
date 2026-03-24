@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 import { useAdminEvent } from '@/hooks/use-events';
 import { EventEditor } from '@/components/admin/event-editor';
+import { adminPath } from '@/lib/admin-path';
 
 export default function EditEventPage() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function EditEventPage() {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500">找不到此活動</p>
-        <Link href="/admin/events" className="btn-primary mt-4 inline-flex">
+        <Link href={adminPath('/events')} className="btn-primary mt-4 inline-flex">
           返回活動列表
         </Link>
       </div>
@@ -38,7 +39,7 @@ export default function EditEventPage() {
     <div>
       <div className="mb-6">
         <Link
-          href="/admin/events"
+          href={adminPath('/events')}
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />

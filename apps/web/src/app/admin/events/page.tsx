@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAdminEvents, useDeleteEvent } from '@/hooks/use-events';
 import { formatDate } from '@/lib/utils';
+import { adminPath } from '@/lib/admin-path';
 import { Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function AdminEventsPage() {
@@ -25,7 +26,7 @@ export default function AdminEventsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">活動管理</h1>
-        <Link href="/admin/events/new" className="btn-primary">
+        <Link href={adminPath('/events/new')} className="btn-primary">
           <Plus className="h-5 w-5 mr-2" />
           新增活動
         </Link>
@@ -40,7 +41,7 @@ export default function AdminEventsPage() {
         ) : !events?.length ? (
           <div className="text-center py-12">
             <p className="text-gray-500">目前沒有活動</p>
-            <Link href="/admin/events/new" className="btn-primary mt-4 inline-flex">
+            <Link href={adminPath('/events/new')} className="btn-primary mt-4 inline-flex">
               建立第一個活動
             </Link>
           </div>
@@ -121,7 +122,7 @@ export default function AdminEventsPage() {
                           )}
                         </span>
                         <Link
-                          href={`/admin/events/${event.id}/edit`}
+                          href={adminPath(`/events/${event.id}/edit`)}
                           className="p-2 hover:bg-gray-100 rounded-lg"
                           title="編輯"
                         >

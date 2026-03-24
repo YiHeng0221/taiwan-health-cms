@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAdminArticles, useDeleteArticle, useTogglePublish } from '@/hooks/use-articles';
 import { formatDate } from '@/lib/utils';
+import { adminPath } from '@/lib/admin-path';
 import { Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function AdminArticlesPage() {
@@ -31,7 +32,7 @@ export default function AdminArticlesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">文章管理</h1>
-        <Link href="/admin/articles/new" className="btn-primary">
+        <Link href={adminPath('/articles/new')} className="btn-primary">
           <Plus className="h-5 w-5 mr-2" />
           新增文章
         </Link>
@@ -46,7 +47,7 @@ export default function AdminArticlesPage() {
         ) : !data?.items?.length ? (
           <div className="text-center py-12">
             <p className="text-gray-500">目前沒有文章</p>
-            <Link href="/admin/articles/new" className="btn-primary mt-4">
+            <Link href={adminPath('/articles/new')} className="btn-primary mt-4">
               建立第一篇文章
             </Link>
           </div>
@@ -104,7 +105,7 @@ export default function AdminArticlesPage() {
                         )}
                       </button>
                       <Link
-                        href={`/admin/articles/${article.id}/edit`}
+                        href={adminPath(`/articles/${article.id}/edit`)}
                         className="p-2 hover:bg-gray-100 rounded-lg"
                       >
                         <Edit className="h-4 w-4 text-gray-600" />

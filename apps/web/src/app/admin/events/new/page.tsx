@@ -7,13 +7,14 @@
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { EventEditor } from '@/components/admin/event-editor';
+import { adminPath } from '@/lib/admin-path';
 
 export default function NewEventPage() {
   return (
     <div>
       <div className="mb-6">
         <Link
-          href="/admin/events"
+          href={adminPath('/events')}
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />

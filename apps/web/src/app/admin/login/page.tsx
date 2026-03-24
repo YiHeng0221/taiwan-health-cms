@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useLogin } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { adminPath } from '@/lib/admin-path';
 
 const loginSchema = z.object({
   email: z.string().email('請輸入有效的電子郵件'),
@@ -37,7 +38,7 @@ export default function AdminLoginPage() {
     setError(null);
     try {
       await login.mutateAsync(data);
-      router.push('/admin');
+      router.push(adminPath());
     } catch (err) {
       setError('帳號或密碼錯誤');
     }

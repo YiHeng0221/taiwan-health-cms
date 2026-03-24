@@ -17,14 +17,15 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-auth';
+import { adminPath } from '@/lib/admin-path';
 
 const navigation = [
-  { name: '儀表板', href: '/admin', icon: LayoutDashboard },
-  { name: '文章管理', href: '/admin/articles', icon: FileText },
-  { name: '首頁區塊', href: '/admin/home-sections', icon: Home },
-  { name: '活動管理', href: '/admin/events', icon: Calendar },
-  { name: '聯絡訊息', href: '/admin/contacts', icon: Mail },
-  { name: '網站設定', href: '/admin/settings', icon: Settings },
+  { name: '儀表板', href: adminPath(), icon: LayoutDashboard },
+  { name: '文章管理', href: adminPath('/articles'), icon: FileText },
+  { name: '首頁區塊', href: adminPath('/home-sections'), icon: Home },
+  { name: '活動管理', href: adminPath('/events'), icon: Calendar },
+  { name: '聯絡訊息', href: adminPath('/contacts'), icon: Mail },
+  { name: '網站設定', href: adminPath('/settings'), icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -33,14 +34,14 @@ export function AdminSidebar() {
 
   const handleLogout = async () => {
     await logout.mutateAsync();
-    window.location.href = '/admin/login';
+    window.location.href = adminPath('/login');
   };
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white hidden lg:block">
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-gray-800">
-        <Link href="/admin" className="text-xl font-bold">
+        <Link href={adminPath()} className="text-xl font-bold">
           樂頤生健康管理
         </Link>
       </div>
@@ -50,7 +51,7 @@ export function AdminSidebar() {
         {navigation.map((item) => {
           const isActive =
             pathname === item.href ||
-            (item.href !== '/admin' && pathname.startsWith(item.href));
+            (item.href !== adminPath() && pathname.startsWith(item.href));
 
           return (
             <Link

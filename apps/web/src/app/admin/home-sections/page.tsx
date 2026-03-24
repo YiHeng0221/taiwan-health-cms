@@ -30,6 +30,7 @@ import {
   useReorderHomeSections,
 } from '@/hooks/use-home-sections';
 import { HomeSection } from '@taiwan-health/shared-types';
+import { adminPath } from '@/lib/admin-path';
 
 /** Friendly labels for section types */
 const TYPE_LABELS: Record<string, string> = {
@@ -118,7 +119,7 @@ function SortableRow({ section, index, onDelete, isDeleting }: SortableRowProps)
       {/* Actions */}
       <div className="flex items-center gap-1 flex-shrink-0">
         <Link
-          href={`/admin/home-sections/${section.id}/edit`}
+          href={adminPath(`/home-sections/${section.id}/edit`)}
           className="p-2 hover:bg-gray-100 rounded-lg"
           title="編輯"
         >
@@ -193,7 +194,7 @@ export default function AdminHomeSectionsPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">首頁區塊管理</h1>
         <Link
-          href="/admin/home-sections/new"
+          href={adminPath('/home-sections/new')}
           className="flex items-center gap-2 px-4 py-2 bg-brand-yellow text-brand-dark font-semibold rounded-lg hover:bg-brand-yellow/90 transition-colors"
         >
           <Plus className="h-5 w-5" />
@@ -214,7 +215,7 @@ export default function AdminHomeSectionsPage() {
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">目前沒有首頁區塊</p>
             <Link
-              href="/admin/home-sections/new"
+              href={adminPath('/home-sections/new')}
               className="text-brand-brown hover:underline text-sm"
             >
               + 新增第一個區塊

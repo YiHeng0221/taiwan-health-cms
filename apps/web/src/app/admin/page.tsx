@@ -5,6 +5,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FileText, Image, Calendar, Mail, Home, Users } from 'lucide-react';
+import { adminPath } from '@/lib/admin-path';
 
 export const metadata: Metadata = {
   title: '管理後台',
@@ -15,28 +16,28 @@ const quickLinks = [
   {
     title: '文章管理',
     description: '管理運動專欄文章',
-    href: '/admin/articles',
+    href: adminPath('/articles'),
     icon: FileText,
     count: null,
   },
   {
     title: '首頁區塊',
     description: '編輯首頁內容區塊',
-    href: '/admin/home-sections',
+    href: adminPath('/home-sections'),
     icon: Home,
     count: null,
   },
   {
     title: '活動管理',
     description: '管理活動花絮',
-    href: '/admin/events',
+    href: adminPath('/events'),
     icon: Calendar,
     count: null,
   },
   {
     title: '聯絡訊息',
     description: '查看訪客留言',
-    href: '/admin/contacts',
+    href: adminPath('/contacts'),
     icon: Mail,
     count: null,
   },
@@ -76,14 +77,14 @@ export default function AdminDashboardPage() {
         <h2 className="font-semibold mb-4">快速操作</h2>
         <div className="space-y-3">
           <Link
-            href="/admin/articles/new"
+            href={adminPath('/articles/new')}
             className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <span className="font-medium">+ 新增文章</span>
             <p className="text-sm text-gray-500">建立新的運動專欄文章</p>
           </Link>
           <Link
-            href="/admin/home-sections"
+            href={adminPath('/home-sections')}
             className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <span className="font-medium">編輯首頁</span>
