@@ -77,6 +77,24 @@ export class AuthService {
   }
 
   /**
+   * Issues a new token for an already-authenticated user (for refresh)
+   */
+  async refreshToken(user: SharedUser): Promise<AuthResponse> {
+    const payload: Omit<JwtPayload, 'iat' | 'exp'> = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      user,
+      accessToken,
+    };
+  }
+
+  /**
    * Gets current user from token
    */
   async getCurrentUser(userId: string): Promise<SharedUser | null> {

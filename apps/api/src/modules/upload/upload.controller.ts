@@ -9,6 +9,7 @@ import {
   Controller,
   Post,
   UseInterceptors,
+  UseGuards,
   UploadedFile,
   UploadedFiles,
   Query,
@@ -18,8 +19,10 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { memoryStorage } from 'multer';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('upload')
+@UseGuards(JwtAuthGuard)
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 

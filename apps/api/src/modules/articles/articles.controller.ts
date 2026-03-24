@@ -16,6 +16,7 @@ import {
   Query,
   UseGuards,
   Patch,
+  NotFoundException,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -55,7 +56,7 @@ export class ArticlesController {
     
     // Only return published articles publicly
     if (!article.isPublished) {
-      throw new Error('找不到此文章');
+      throw new NotFoundException('找不到此文章');
     }
     
     return article;

@@ -89,10 +89,7 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.login({
-      email: user.email,
-      password: '', // Will be validated by guard, no need to re-check password
-    });
+    const result = await this.authService.refreshToken(user);
 
     res.cookie('access_token', result.accessToken, COOKIE_OPTIONS);
 
