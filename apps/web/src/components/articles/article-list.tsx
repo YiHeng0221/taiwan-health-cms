@@ -6,28 +6,41 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useArticles } from '@/hooks/use-articles';
 import { formatDate } from '@/lib/utils';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
+function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debounced;
+}
+
 export function ArticleList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search, 400);
   const pageSize = 9;
 
   const { data, isLoading, error } = useArticles({
     page,
     pageSize,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
   });
 
-  // Handle search with debounce
+  // Reset to first page when debounced search changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1); // Reset to first page on search
   };
 
   if (isLoading) {

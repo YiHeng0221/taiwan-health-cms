@@ -10,28 +10,32 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
+import { CreateServiceDto } from './dto/create-service.dto';
+import { UpdateServiceDto } from './dto/update-service.dto';
+import { QueryServiceDto } from './dto/query-service.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Public } from '../../common/decorators';
 
 @Controller('services')
 export class ServicesController {
-  constructor(private readonly servicesService: ServicesService) { }
+  constructor(private readonly servicesService: ServicesService) {}
 
-  /** GET /api/services — public list */
+  /** GET /api/services — public list (all active, no pagination needed for public) */
   @Public()
   @Get()
   async findAllActive() {
     return this.servicesService.findAllActive();
   }
 
-  /** GET /api/services/admin — admin list */
+  /** GET /api/services/admin — admin list with pagination */
   @UseGuards(JwtAuthGuard)
   @Get('admin')
-  async findAll() {
-    return this.servicesService.findAll();
+  async findAll(@Query() query: QueryServiceDto) {
+    return this.servicesService.findAll(query);
   }
 
   /** GET /api/services/admin/:id */
@@ -44,38 +48,15 @@ export class ServicesController {
   /** POST /api/services/admin */
   @UseGuards(JwtAuthGuard)
   @Post('admin')
-  async create(
-    @Body()
-    body: {
-      title: string;
-      description: string;
-      icon?: string;
-      image?: string;
-      features?: string[];
-      order?: number;
-      isActive?: boolean;
-    },
-  ) {
-    return this.servicesService.create(body);
+  async create(@Body() dto: CreateServiceDto) {
+    return this.servicesService.create(dto);
   }
 
   /** PUT /api/services/admin/:id */
   @UseGuards(JwtAuthGuard)
   @Put('admin/:id')
-  async update(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      description?: string;
-      icon?: string;
-      image?: string;
-      features?: string[];
-      order?: number;
-      isActive?: boolean;
-    },
-  ) {
-    return this.servicesService.update(id, body);
+  async update(@Param('id') id: string, @Body() dto: UpdateServiceDto) {
+    return this.servicesService.update(id, dto);
   }
 
   /** DELETE /api/services/admin/:id */

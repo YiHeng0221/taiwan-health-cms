@@ -77,9 +77,8 @@ export function CarouselSection({ section }: Props) {
             {config.items.map((item, index) => (
               <div
                 key={index}
-                className="embla__slide"
+                className="embla__slide embla__slide--responsive"
                 style={{
-                  flex: '0 0 50%',
                   minWidth: 0,
                   paddingLeft: '1rem',
                 }}
@@ -125,6 +124,7 @@ export function CarouselSection({ section }: Props) {
                 <button
                   key={index}
                   onClick={() => onDotButtonClick(index)}
+                  aria-label={`前往第 ${index + 1} 張`}
                   className={`w-3 h-3 rounded-full transition-colors ${index === selectedIndex
                     ? 'bg-brand-dark'
                     : 'bg-gray-300 hover:bg-gray-400'

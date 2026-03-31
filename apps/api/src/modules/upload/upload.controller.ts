@@ -15,16 +15,19 @@ import {
   Query,
   Delete,
   Body,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { memoryStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+const ALLOWED_FOLDERS = ['articles', 'events', 'settings', 'services', 'home-sections'];
+
 @Controller('upload')
 @UseGuards(JwtAuthGuard)
 export class UploadController {
-  constructor(private readonly uploadService: UploadService) { }
+  constructor(private readonly uploadService: UploadService) {}
 
   /**
    * Upload a single image
@@ -41,7 +44,18 @@ export class UploadController {
     @UploadedFile() file: Express.Multer.File,
     @Query('folder') folder?: string,
   ) {
-    return this.uploadService.uploadImage(file, folder || 'articles');
+    if (!file) {
+      throw new BadRequestException('請上傳檔案');
+    }
+
+    const resolvedFolder = folder || 'articles';
+    if (!ALLOWED_FOLDERS.includes(resolvedFolder)) {
+      throw new BadRequestException(
+        `無效的資料夾名稱。允許的資料夾: ${ALLOWED_FOLDERS.join(', ')}`,
+      );
+    }
+
+    return this.uploadService.uploadImage(file, resolvedFolder);
   }
 
   /**
@@ -59,7 +73,18 @@ export class UploadController {
     @UploadedFiles() files: Express.Multer.File[],
     @Query('folder') folder?: string,
   ) {
-    return this.uploadService.uploadImages(files, folder || 'articles');
+    if (!files || files.length === 0) {
+      throw new BadRequestException('請上傳至少一個檔案');
+    }
+
+    const resolvedFolder = folder || 'articles';
+    if (!ALLOWED_FOLDERS.includes(resolvedFolder)) {
+      throw new BadRequestException(
+        `無效的資料夾名稱。允許的資料夾: ${ALLOWED_FOLDERS.join(', ')}`,
+      );
+    }
+
+    return this.uploadService.uploadImages(files, resolvedFolder);
   }
 
   /**
@@ -68,6 +93,9 @@ export class UploadController {
    */
   @Delete('image')
   async deleteImage(@Body('url') url: string) {
+    if (!url) {
+      throw new BadRequestException('請提供圖片 URL');
+    }
     await this.uploadService.deleteImage(url);
     return { message: '圖片已刪除' };
   }

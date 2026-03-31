@@ -52,6 +52,7 @@ export default function AdminArticlesPage() {
             </Link>
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
@@ -122,6 +123,7 @@ export default function AdminArticlesPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 

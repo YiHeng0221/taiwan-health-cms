@@ -5,10 +5,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Service } from '@prisma/client';
+import { CreateServiceDto } from './dto/create-service.dto';
+import { UpdateServiceDto } from './dto/update-service.dto';
+import { QueryServiceDto } from './dto/query-service.dto';
+import { PaginatedResponse } from '@taiwan-health/shared-types';
 
 @Injectable()
 export class ServicesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /** Public: get all active services ordered */
   async findAllActive(): Promise<Service[]> {
@@ -18,9 +22,34 @@ export class ServicesService {
     });
   }
 
-  /** Admin: get all services */
-  async findAll(): Promise<Service[]> {
-    return this.prisma.service.findMany({ orderBy: { order: 'asc' } });
+  /** Admin: get all services with pagination */
+  async findAll(query: QueryServiceDto): Promise<PaginatedResponse<Service>> {
+    const { page = 1, pageSize = 10, isActive } = query;
+    const skip = (page - 1) * pageSize;
+
+    const where: Record<string, unknown> = {};
+
+    if (isActive !== undefined) {
+      where.isActive = isActive;
+    }
+
+    const [total, items] = await Promise.all([
+      this.prisma.service.count({ where }),
+      this.prisma.service.findMany({
+        where,
+        skip,
+        take: pageSize,
+        orderBy: { order: 'asc' },
+      }),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
   }
 
   /** Get single service by ID */
@@ -31,43 +60,35 @@ export class ServicesService {
   }
 
   /** Create */
-  async create(data: {
-    title: string;
-    description: string;
-    icon?: string;
-    image?: string;
-    features?: string[];
-    order?: number;
-    isActive?: boolean;
-  }): Promise<Service> {
+  async create(dto: CreateServiceDto): Promise<Service> {
     return this.prisma.service.create({
       data: {
-        title: data.title,
-        description: data.description,
-        icon: data.icon ?? 'activity',
-        image: data.image,
-        features: data.features ?? [],
-        order: data.order ?? 0,
-        isActive: data.isActive ?? true,
+        title: dto.title,
+        description: dto.description,
+        icon: dto.icon ?? 'activity',
+        image: dto.image,
+        features: dto.features ?? [],
+        order: dto.order ?? 0,
+        isActive: dto.isActive ?? true,
       },
     });
   }
 
   /** Update */
-  async update(
-    id: string,
-    data: {
-      title?: string;
-      description?: string;
-      icon?: string;
-      image?: string;
-      features?: string[];
-      order?: number;
-      isActive?: boolean;
-    },
-  ): Promise<Service> {
-    await this.findOne(id); // ensure exists
-    return this.prisma.service.update({ where: { id }, data });
+  async update(id: string, dto: UpdateServiceDto): Promise<Service> {
+    await this.findOne(id);
+    return this.prisma.service.update({
+      where: { id },
+      data: {
+        title: dto.title,
+        description: dto.description,
+        icon: dto.icon,
+        image: dto.image,
+        features: dto.features,
+        order: dto.order,
+        isActive: dto.isActive,
+      },
+    });
   }
 
   /** Delete */

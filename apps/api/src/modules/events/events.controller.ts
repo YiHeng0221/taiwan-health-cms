@@ -10,28 +10,32 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { QueryEventDto } from './dto/query-event.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Public } from '../../common/decorators';
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) { }
+  constructor(private readonly eventsService: EventsService) {}
 
-  /** Public: published events */
+  /** Public: published events with pagination */
   @Public()
   @Get()
-  async findAllPublished() {
-    return this.eventsService.findAllPublished();
+  async findAllPublished(@Query() query: QueryEventDto) {
+    return this.eventsService.findAllPublished(query);
   }
 
-  /** Admin: all events */
+  /** Admin: all events with pagination */
   @UseGuards(JwtAuthGuard)
   @Get('admin')
-  async findAll() {
-    return this.eventsService.findAll();
+  async findAll(@Query() query: QueryEventDto) {
+    return this.eventsService.findAll(query);
   }
 
   /** Admin: single event */
@@ -51,44 +55,15 @@ export class EventsController {
   /** Admin: create */
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(
-    @Body()
-    dto: {
-      title: string;
-      slug: string;
-      description: string;
-      date: string;
-      location: string;
-      images?: string[];
-      isPublished?: boolean;
-    },
-  ) {
-    return this.eventsService.create({
-      ...dto,
-      date: new Date(dto.date),
-    });
+  async create(@Body() dto: CreateEventDto) {
+    return this.eventsService.create(dto);
   }
 
   /** Admin: update */
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body()
-    dto: {
-      title?: string;
-      slug?: string;
-      description?: string;
-      date?: string;
-      location?: string;
-      images?: string[];
-      isPublished?: boolean;
-    },
-  ) {
-    return this.eventsService.update(id, {
-      ...dto,
-      date: dto.date ? new Date(dto.date) : undefined,
-    });
+  async update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
+    return this.eventsService.update(id, dto);
   }
 
   /** Admin: delete */

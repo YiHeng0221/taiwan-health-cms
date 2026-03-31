@@ -8,9 +8,18 @@ import { Event } from '@taiwan-health/shared-types';
 
 export const eventKeys = {
   all: ['events'] as const,
+  published: () => [...eventKeys.all, 'published'] as const,
   admin: () => [...eventKeys.all, 'admin'] as const,
   adminDetail: (id: string) => [...eventKeys.admin(), id] as const,
 };
+
+/** Fetch published events (public) */
+export function usePublicEvents() {
+  return useQuery({
+    queryKey: eventKeys.published(),
+    queryFn: () => api.get<Event[]>('/events'),
+  });
+}
 
 /** Fetch all events (admin) */
 export function useAdminEvents() {

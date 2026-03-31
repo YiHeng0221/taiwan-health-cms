@@ -14,7 +14,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { QueryArticleDto } from './dto/query-article.dto';
-import { Article } from '@prisma/client';
+import { Article, Prisma } from '@prisma/client';
 import { PaginatedResponse, ArticleListItem } from '@taiwan-health/shared-types';
 import slugify from 'slugify';
 
@@ -43,7 +43,7 @@ export class ArticlesService {
       data: {
         title: dto.title,
         slug,
-        content: dto.content as any,
+        content: dto.content as unknown as Prisma.InputJsonValue,
         coverImage: dto.coverImage || this.extractFirstImage(dto.content),
         metaDescription: dto.metaDescription,
         isPublished: dto.isPublished ?? false,
@@ -159,7 +159,7 @@ export class ArticlesService {
       where: { id },
       data: {
         ...dto,
-        content: dto.content as any,
+        content: dto.content as unknown as Prisma.InputJsonValue,
         coverImage: dto.coverImage || this.extractFirstImage(dto.content),
       },
     });

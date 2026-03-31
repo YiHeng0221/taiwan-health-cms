@@ -120,12 +120,14 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-1">測試帳號：</p>
-            <p>Email: admin@leyisheng.com</p>
-            <p>Password: admin123</p>
-          </div>
+          {/* Demo credentials — only in development */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
+              <p className="font-medium mb-1">測試帳號：</p>
+              <p>Email: admin@leyisheng.com</p>
+              <p>Password: admin123</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

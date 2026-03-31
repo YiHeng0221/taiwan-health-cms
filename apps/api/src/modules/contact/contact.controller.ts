@@ -2,21 +2,24 @@
  * @fileoverview Contact Controller
  */
 
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
+import { QueryContactDto } from './dto/query-contact.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Public } from '../../common/decorators';
 
 @Controller('contact')
 export class ContactController {
-  constructor(private readonly contactService: ContactService) { }
+  constructor(private readonly contactService: ContactService) {}
 
   /**
    * POST /api/contact
-   * Public contact form submission
+   * Public contact form submission (rate limited: 5 per minute)
    */
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post()
   async create(@Body() dto: CreateContactDto) {
     await this.contactService.create(dto);
@@ -25,12 +28,12 @@ export class ContactController {
 
   /**
    * GET /api/contact
-   * Get all submissions (admin)
+   * Get all submissions with pagination (admin)
    */
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    return this.contactService.findAll();
+  async findAll(@Query() query: QueryContactDto) {
+    return this.contactService.findAll(query);
   }
 
   /**

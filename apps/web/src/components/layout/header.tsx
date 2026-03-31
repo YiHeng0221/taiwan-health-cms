@@ -37,6 +37,7 @@ export function Header() {
             type="button"
             className="md:hidden p-2 -ml-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? '關閉選單' : '開啟選單'}
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6 text-brand-brown" />

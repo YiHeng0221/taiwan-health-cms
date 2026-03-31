@@ -16,6 +16,7 @@ import {
 import { HomeSectionsService } from './home-sections.service';
 import { CreateHomeSectionDto } from './dto/create-home-section.dto';
 import { UpdateHomeSectionDto } from './dto/update-home-section.dto';
+import { ReorderHomeSectionsDto } from './dto/reorder-home-sections.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Public } from '../../common/decorators';
 
@@ -79,8 +80,8 @@ export class HomeSectionsController {
    */
   @UseGuards(JwtAuthGuard)
   @Patch('reorder')
-  async reorder(@Body() body: { orderedIds: string[] }) {
-    return this.homeSectionsService.reorder(body.orderedIds);
+  async reorder(@Body() dto: ReorderHomeSectionsDto) {
+    return this.homeSectionsService.reorder(dto.orderedIds);
   }
 
   /**

@@ -4,18 +4,13 @@
 
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { Event } from '@taiwan-health/shared-types';
+import { usePublicEvents } from '@/hooks/use-events';
 import { formatDate } from '@/lib/utils';
 import { Calendar, MapPin } from 'lucide-react';
 import Image from 'next/image';
 
 export function EventsList() {
-  const { data: events, isLoading } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => api.get<Event[]>('/events'),
-  });
+  const { data: events, isLoading, error } = usePublicEvents();
 
   if (isLoading) {
     return (
@@ -29,6 +24,14 @@ export function EventsList() {
             </div>
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-500">載入活動時發生錯誤，請稍後再試。</p>
       </div>
     );
   }

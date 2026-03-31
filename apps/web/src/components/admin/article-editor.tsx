@@ -13,7 +13,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useCreateArticle, useUpdateArticle } from '@/hooks/use-articles';
-import { Article, TiptapContent } from '@taiwan-health/shared-types';
+import { Article, TiptapContent, CreateArticleDto } from '@taiwan-health/shared-types';
 import { TiptapEditor } from './tiptap-editor';
 import { cn } from '@/lib/utils';
 import { Loader2, Save, Eye } from 'lucide-react';
@@ -71,7 +71,10 @@ export function ArticleEditor({ article }: Props) {
     if (isEditing) {
       await updateArticle.mutateAsync({ id: article.id, data: payload });
     } else {
-      await createArticle.mutateAsync(payload as any);
+      await createArticle.mutateAsync({
+        ...payload,
+        slug: payload.slug || '',
+      } as CreateArticleDto);
     }
 
     router.push(adminPath('/articles'));

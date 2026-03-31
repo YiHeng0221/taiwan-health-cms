@@ -33,6 +33,7 @@ export function EventEditor({ initialData }: EventEditorProps) {
   const createEvent = useCreateEvent();
   const updateEvent = useUpdateEvent();
   const uploadImage = useUploadImage('events');
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState<EventFormData>({
     title: initialData?.title ?? '',
@@ -76,8 +77,8 @@ export function EventEditor({ initialData }: EventEditorProps) {
             ...prev,
             images: [...prev.images, result.url],
           }));
-        } catch (err) {
-          console.error('Upload failed:', err);
+        } catch {
+          setError('照片上傳失敗，請稍後再試');
         }
       }
       // Reset file input
@@ -95,6 +96,7 @@ export function EventEditor({ initialData }: EventEditorProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     try {
       if (isEdit) {
@@ -106,8 +108,8 @@ export function EventEditor({ initialData }: EventEditorProps) {
         await createEvent.mutateAsync(form);
       }
       router.push(adminPath('/events'));
-    } catch (err) {
-      console.error('Save failed:', err);
+    } catch {
+      setError('儲存失敗，請稍後再試');
     }
   };
 
@@ -254,6 +256,13 @@ export function EventEditor({ initialData }: EventEditorProps) {
           立即發布
         </label>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center gap-4 pt-4 border-t">

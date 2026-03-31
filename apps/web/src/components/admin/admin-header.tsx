@@ -5,15 +5,21 @@
 'use client';
 
 import { useCurrentUser } from '@/hooks/use-auth';
-import { Menu, Bell, User } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
+import { useSidebarStore } from '@/stores/sidebar-store';
 
 export function AdminHeader() {
   const { data: user } = useCurrentUser();
+  const toggle = useSidebarStore((s) => s.toggle);
 
   return (
     <header className="h-16 bg-white border-b flex items-center justify-between px-6">
       {/* Mobile menu button */}
-      <button className="lg:hidden p-2">
+      <button
+        className="lg:hidden p-2"
+        onClick={toggle}
+        aria-label="開啟側邊選單"
+      >
         <Menu className="h-6 w-6" />
       </button>
 
@@ -22,11 +28,6 @@ export function AdminHeader() {
 
       {/* Right side */}
       <div className="flex items-center gap-4">
-        {/* Notifications */}
-        <button className="p-2 hover:bg-gray-100 rounded-lg">
-          <Bell className="h-5 w-5 text-gray-600" />
-        </button>
-
         {/* User info */}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-brand-yellow/10 rounded-full flex items-center justify-center">

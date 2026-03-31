@@ -125,7 +125,14 @@ export class UploadService implements OnModuleInit {
   async deleteImage(url: string): Promise<void> {
     // Extract path from URL
     const bucketUrl = `/storage/v1/object/public/${BUCKET_NAME}/`;
-    const urlObj = new URL(url);
+
+    let urlObj: URL;
+    try {
+      urlObj = new URL(url);
+    } catch {
+      throw new BadRequestException('無效的圖片 URL 格式');
+    }
+
     const filePath = urlObj.pathname.split(bucketUrl).pop();
 
     if (!filePath) {

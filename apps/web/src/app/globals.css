@@ -108,3 +108,14 @@
 .tiptap-editor a {
   @apply text-brand-brown hover:text-brand-yellow underline;
 }
+
+/* Carousel responsive slide width */
+.embla__slide--responsive {
+  flex: 0 0 85%;
+}
+
+@media (min-width: 640px) {
+  .embla__slide--responsive {
+    flex: 0 0 50%;
+  }
+}

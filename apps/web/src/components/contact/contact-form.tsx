@@ -57,7 +57,10 @@ export function ContactForm() {
         <h3 className="text-xl font-semibold mb-2">感謝您的來信！</h3>
         <p className="text-gray-600 mb-6">我們已收到您的訊息，會盡快回覆您。</p>
         <button
-          onClick={() => setSubmitted(false)}
+          onClick={() => {
+            setSubmitted(false);
+            mutation.reset();
+          }}
           className="btn-outline"
         >
           發送新訊息

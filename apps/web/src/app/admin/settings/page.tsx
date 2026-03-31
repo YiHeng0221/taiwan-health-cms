@@ -55,14 +55,16 @@ export default function AdminSettingsPage() {
     }
   }, [settings]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       const result = await uploadLogo.mutateAsync(file);
       setForm((prev) => ({ ...prev, logo: result.url }));
-    } catch (err) {
-      console.error('Logo upload failed:', err);
+    } catch {
+      setError('Logo 上傳失敗，請稍後再試');
     }
     e.target.value = '';
   };
@@ -75,20 +77,21 @@ export default function AdminSettingsPage() {
     try {
       const result = await uploadFavicon.mutateAsync(file);
       setForm((prev) => ({ ...prev, favicon: result.url }));
-    } catch (err) {
-      console.error('Favicon upload failed:', err);
+    } catch {
+      setError('Favicon 上傳失敗，請稍後再試');
     }
     e.target.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     try {
       await updateSettings.mutateAsync(form);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error('Save failed:', err);
+    } catch {
+      setError('儲存失敗，請稍後再試');
     }
   };
 
@@ -360,6 +363,13 @@ export default function AdminSettingsPage() {
             />
           </div>
         </section>
+
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Save button */}
         <div className="flex items-center gap-4 pb-8">

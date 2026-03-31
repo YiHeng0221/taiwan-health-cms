@@ -92,9 +92,14 @@ export function TiptapEditor({ content, onChange }: Props) {
 
   const addLink = () => {
     const url = prompt('輸入連結網址：');
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
+    if (!url) return;
+
+    if (!/^https?:\/\//i.test(url)) {
+      alert('連結必須以 http:// 或 https:// 開頭');
+      return;
     }
+
+    editor.chain().focus().setLink({ href: url }).run();
   };
 
   return (

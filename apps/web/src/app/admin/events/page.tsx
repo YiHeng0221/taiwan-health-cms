@@ -46,6 +46,7 @@ export default function AdminEventsPage() {
             </Link>
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
@@ -142,6 +143,7 @@ export default function AdminEventsPage() {
               })}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>

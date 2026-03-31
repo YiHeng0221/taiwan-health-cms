@@ -33,7 +33,7 @@ export function HomeSections() {
         <div className="h-96 bg-gray-200" />
         <div className="container-custom py-12">
           <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-8" />
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-40 bg-gray-200 rounded" />
             ))}
