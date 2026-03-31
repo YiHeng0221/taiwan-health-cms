@@ -25,9 +25,11 @@ RUN pnpm --filter @taiwan-health/shared-types build
 # Generate Prisma client and build API
 WORKDIR /app/apps/api
 RUN npx prisma generate
-RUN npx nest build
 
-# Verify build output exists
+# Use tsc directly (nest build relies on tsconfig.build.json which may not exist)
+RUN npx tsc -p tsconfig.json --outDir dist
+
+# Verify build output
 RUN ls -la dist/main.js
 
 # Production stage
