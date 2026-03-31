@@ -18,7 +18,9 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { QueryEventDto } from './dto/query-event.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Public } from '../../common/decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Public, Roles } from '../../common/decorators';
+import { UserRole } from '@taiwan-health/shared-types';
 
 @Controller('events')
 export class EventsController {
@@ -32,14 +34,16 @@ export class EventsController {
   }
 
   /** Admin: all events with pagination */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Get('admin')
   async findAll(@Query() query: QueryEventDto) {
     return this.eventsService.findAll(query);
   }
 
   /** Admin: single event */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Get('admin/:id')
   async findById(@Param('id') id: string) {
     return this.eventsService.findById(id);
@@ -53,21 +57,24 @@ export class EventsController {
   }
 
   /** Admin: create */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Post()
   async create(@Body() dto: CreateEventDto) {
     return this.eventsService.create(dto);
   }
 
   /** Admin: update */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
     return this.eventsService.update(id, dto);
   }
 
   /** Admin: delete */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.eventsService.remove(id);

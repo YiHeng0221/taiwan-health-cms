@@ -5,12 +5,9 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard, ROLES_KEY } from '../auth/guards/roles.guard';
-import { SetMetadata } from '@nestjs/common';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../../common/decorators';
 import { UserRole } from '@taiwan-health/shared-types';
-
-// Roles decorator
-const Roles = (...roles: UserRole[]) => SetMetadata(ROLES_KEY, roles);
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)

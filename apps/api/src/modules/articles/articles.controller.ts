@@ -23,8 +23,9 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { QueryArticleDto } from './dto/query-article.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Public, CurrentUser } from '../../common/decorators';
-import { User } from '@taiwan-health/shared-types';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Public, CurrentUser, Roles } from '../../common/decorators';
+import { User, UserRole } from '@taiwan-health/shared-types';
 
 @Controller('articles')
 export class ArticlesController {
@@ -70,7 +71,8 @@ export class ArticlesController {
    * GET /api/articles/admin
    * List all articles for admin (including unpublished)
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Get('admin')
   async findAllAdmin(@Query() query: QueryArticleDto) {
     return this.articlesService.findAll(query);
@@ -80,7 +82,8 @@ export class ArticlesController {
    * GET /api/articles/admin/:id
    * Get article by ID for editing
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Get('admin/:id')
   async findById(@Param('id') id: string) {
     return this.articlesService.findById(id);
@@ -90,7 +93,8 @@ export class ArticlesController {
    * POST /api/articles
    * Create new article
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Post()
   async create(
     @Body() createArticleDto: CreateArticleDto,
@@ -103,7 +107,8 @@ export class ArticlesController {
    * PUT /api/articles/:id
    * Update article
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -116,7 +121,8 @@ export class ArticlesController {
    * PATCH /api/articles/:id/publish
    * Toggle article publish status
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Patch(':id/publish')
   async togglePublish(@Param('id') id: string) {
     return this.articlesService.togglePublish(id);
@@ -126,7 +132,8 @@ export class ArticlesController {
    * DELETE /api/articles/:id
    * Delete article
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.articlesService.remove(id);

@@ -8,11 +8,27 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'mfnwagtumvgleqkdyiee.supabase.co',
+        pathname: '/storage/**',
       },
     ],
   },
   
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://mfnwagtumvgleqkdyiee.supabase.co data:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.railway.app",
+          },
+        ],
+      },
+    ];
+  },
+
   // API proxy to backend
   async rewrites() {
     return [

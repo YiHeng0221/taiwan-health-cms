@@ -17,16 +17,39 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
+  // Production JWT secret validation
+  if (process.env.NODE_ENV === 'production') {
+    const jwtSecret = process.env.JWT_SECRET || '';
+    if (
+      jwtSecret === 'your-super-secret-jwt-key-change-in-production' ||
+      jwtSecret.length < 32
+    ) {
+      console.error(
+        '❌ JWT_SECRET is insecure. It must not be the default value and must be at least 32 characters long.',
+      );
+      process.exit(1);
+    }
+  }
+
   const app = await NestFactory.create(AppModule);
 
   // Security middleware
   app.use(helmet());
   app.use(cookieParser());
 
-  // CORS configuration
+  // CORS configuration — supports multiple origins via comma-separated FRONTEND_URL
+  const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+    .split(',')
+    .map((o) => o.trim());
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true, // Allow cookies
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });

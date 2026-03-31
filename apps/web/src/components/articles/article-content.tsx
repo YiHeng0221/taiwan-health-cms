@@ -60,19 +60,24 @@ function renderContent(nodes: TiptapNode[]): React.ReactNode {
               case 'italic':
                 text = <em key={mark.type}>{text}</em>;
                 break;
-              case 'link':
-                text = (
+              case 'link': {
+                const href = mark.attrs?.href as string;
+                const isSafeUrl = /^(https?:\/\/|mailto:|\/)/i.test(href);
+                text = isSafeUrl ? (
                   <a
                     key={mark.type}
-                    href={mark.attrs?.href as string}
+                    href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-brand-brown hover:underline"
                   >
                     {text}
                   </a>
+                ) : (
+                  <span key={mark.type}>{text}</span>
                 );
                 break;
+              }
             }
           });
         }

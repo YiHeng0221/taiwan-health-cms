@@ -8,7 +8,9 @@ import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { QueryContactDto } from './dto/query-contact.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Public } from '../../common/decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Public, Roles } from '../../common/decorators';
+import { UserRole } from '@taiwan-health/shared-types';
 
 @Controller('contact')
 export class ContactController {
@@ -30,7 +32,8 @@ export class ContactController {
    * GET /api/contact
    * Get all submissions with pagination (admin)
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Get()
   async findAll(@Query() query: QueryContactDto) {
     return this.contactService.findAll(query);
@@ -40,7 +43,8 @@ export class ContactController {
    * PATCH /api/contact/:id/read
    * Mark submission as read
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Patch(':id/read')
   async markAsRead(@Param('id') id: string) {
     return this.contactService.markAsRead(id);
@@ -49,7 +53,8 @@ export class ContactController {
   /**
    * DELETE /api/contact/:id
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.contactService.remove(id);

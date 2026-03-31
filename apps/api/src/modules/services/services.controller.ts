@@ -18,7 +18,9 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { QueryServiceDto } from './dto/query-service.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Public } from '../../common/decorators';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Public, Roles } from '../../common/decorators';
+import { UserRole } from '@taiwan-health/shared-types';
 
 @Controller('services')
 export class ServicesController {
@@ -32,35 +34,40 @@ export class ServicesController {
   }
 
   /** GET /api/services/admin — admin list with pagination */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Get('admin')
   async findAll(@Query() query: QueryServiceDto) {
     return this.servicesService.findAll(query);
   }
 
   /** GET /api/services/admin/:id */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Get('admin/:id')
   async findOne(@Param('id') id: string) {
     return this.servicesService.findOne(id);
   }
 
   /** POST /api/services/admin */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Post('admin')
   async create(@Body() dto: CreateServiceDto) {
     return this.servicesService.create(dto);
   }
 
   /** PUT /api/services/admin/:id */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Put('admin/:id')
   async update(@Param('id') id: string, @Body() dto: UpdateServiceDto) {
     return this.servicesService.update(id, dto);
   }
 
   /** DELETE /api/services/admin/:id */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete('admin/:id')
   async remove(@Param('id') id: string) {
     return this.servicesService.remove(id);

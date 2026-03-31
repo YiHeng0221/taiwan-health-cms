@@ -16,8 +16,29 @@ const ALLOWED_MIME_TYPES = [
   'image/png',
   'image/gif',
   'image/webp',
-  'image/svg+xml',
 ];
+
+const ALLOWED_FOLDERS = ['articles', 'events', 'settings', 'services', 'home-sections'];
+
+function validateMagicBytes(buffer: Buffer, mimetype: string): boolean {
+  if (buffer.length < 12) return false;
+
+  switch (mimetype) {
+    case 'image/jpeg':
+      return buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF;
+    case 'image/png':
+      return buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47;
+    case 'image/gif':
+      return buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38;
+    case 'image/webp':
+      return (
+        buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+        buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50
+      );
+    default:
+      return false;
+  }
+}
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const BUCKET_NAME = 'lys_health';
@@ -77,6 +98,11 @@ export class UploadService implements OnModuleInit {
       );
     }
 
+    // Validate magic bytes
+    if (!validateMagicBytes(file.buffer, file.mimetype)) {
+      throw new BadRequestException('檔案內容與宣告的格式不符');
+    }
+
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException('檔案大小不能超過 10MB');
@@ -95,7 +121,8 @@ export class UploadService implements OnModuleInit {
       });
 
     if (error) {
-      throw new BadRequestException(`上傳失敗: ${error.message}`);
+      this.logger.error(`上傳失敗: ${error.message}`);
+      throw new BadRequestException('檔案上傳失敗，請稍後再試');
     }
 
     // Get public URL
@@ -139,12 +166,19 @@ export class UploadService implements OnModuleInit {
       throw new BadRequestException('無效的圖片 URL');
     }
 
+    // Validate the file path starts with an allowed folder to prevent path traversal
+    const isAllowedPath = ALLOWED_FOLDERS.some((folder) => filePath.startsWith(`${folder}/`));
+    if (!isAllowedPath) {
+      throw new BadRequestException('無效的檔案路徑');
+    }
+
     const { error } = await this.supabase.storage
       .from(BUCKET_NAME)
       .remove([filePath]);
 
     if (error) {
-      throw new BadRequestException(`刪除失敗: ${error.message}`);
+      this.logger.error(`刪除失敗: ${error.message}`);
+      throw new BadRequestException('檔案刪除失敗，請稍後再試');
     }
   }
 
@@ -154,7 +188,6 @@ export class UploadService implements OnModuleInit {
       'image/png': '.png',
       'image/gif': '.gif',
       'image/webp': '.webp',
-      'image/svg+xml': '.svg',
     };
     return map[mime] || '.jpg';
   }

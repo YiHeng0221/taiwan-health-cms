@@ -45,4 +45,6 @@ COPY --from=base /app/packages/shared-types ./packages/shared-types
 
 WORKDIR /app/apps/api
 
+USER node
+
 CMD ["node", "dist/main.js"]
