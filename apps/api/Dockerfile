@@ -26,16 +26,8 @@ RUN pnpm --filter @taiwan-health/shared-types build
 WORKDIR /app/apps/api
 RUN npx prisma generate
 
-# Build API - show errors if any, then list output
-RUN npx tsc -p tsconfig.json --outDir dist 2>&1; \
-    echo "--- tsc exit code: $? ---"; \
-    echo "--- dist contents ---"; \
-    ls -la dist/ 2>&1 || true; \
-    echo "--- checking src ---"; \
-    ls -la src/main.ts 2>&1 || true; \
-    echo "--- checking cwd ---"; \
-    pwd; \
-    test -f dist/main.js
+# Build API
+RUN npx nest build
 
 # Production stage
 FROM node:20-slim AS production
