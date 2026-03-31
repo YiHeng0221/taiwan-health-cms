@@ -36,12 +36,12 @@ RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists
 
 WORKDIR /app
 
-COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=base /app/apps/api/dist ./apps/api/dist
-COPY --from=base /app/apps/api/prisma ./apps/api/prisma
-COPY --from=base /app/apps/api/package.json ./apps/api/package.json
-COPY --from=base /app/packages/shared-types ./packages/shared-types
+COPY --from=base --chown=node:node /app/node_modules ./node_modules
+COPY --from=base --chown=node:node /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=base --chown=node:node /app/apps/api/dist ./apps/api/dist
+COPY --from=base --chown=node:node /app/apps/api/prisma ./apps/api/prisma
+COPY --from=base --chown=node:node /app/apps/api/package.json ./apps/api/package.json
+COPY --from=base --chown=node:node /app/packages/shared-types ./packages/shared-types
 
 WORKDIR /app/apps/api
 
