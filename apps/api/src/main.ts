@@ -74,9 +74,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const port = process.env.PORT || 4000;
-  await app.listen(port);
-  
-  console.log(`🚀 API 伺服器運行於: http://localhost:${port}/api`);
+  await app.listen(port, '0.0.0.0');
+
+  console.log(`🚀 API 伺服器運行於: http://0.0.0.0:${port}/api`);
 }
 
 bootstrap();
