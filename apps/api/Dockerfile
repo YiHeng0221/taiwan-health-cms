@@ -47,4 +47,6 @@ WORKDIR /app/apps/api
 
 USER node
 
+EXPOSE ${PORT:-8080}
+
 CMD ["node", "dist/main.js"]
