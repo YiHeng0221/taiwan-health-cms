@@ -2,7 +2,7 @@
  * @fileoverview Users Controller
  */
 
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -22,5 +22,17 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   async findAll() {
     return this.usersService.findAll();
+  }
+
+  /**
+   * POST /api/users
+   * Create a new user (admin only)
+   */
+  @Post()
+  @Roles(UserRole.ADMIN)
+  async create(
+    @Body() body: { email: string; password: string; role?: string },
+  ) {
+    return this.usersService.create(body);
   }
 }

@@ -4,9 +4,10 @@
  * Handles user data access layer.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { User as PrismaUser } from '@prisma/client';
+import { User as PrismaUser, UserRole } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,29 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { id },
     });
+  }
+
+  /**
+   * Create a new user (admin only)
+   */
+  async create(data: {
+    email: string;
+    password: string;
+    role?: UserRole;
+  }): Promise<Omit<PrismaUser, 'password'>> {
+    const existing = await this.findByEmail(data.email);
+    if (existing) {
+      throw new ConflictException('此 Email 已被使用');
+    }
+    const hashedPassword = await bcrypt.hash(data.password, 12);
+    const { password: _, ...user } = await this.prisma.user.create({
+      data: {
+        email: data.email,
+        password: hashedPassword,
+        role: data.role || UserRole.ADMIN,
+      },
+    });
+    return user;
   }
 
   /**
