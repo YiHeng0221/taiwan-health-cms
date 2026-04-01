@@ -4,7 +4,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { ContactSubmission } from '@taiwan-health/shared-types';
+import { ContactSubmission, PaginatedResponse } from '@taiwan-health/shared-types';
 
 export const contactKeys = {
   all: ['contacts'] as const,
@@ -15,7 +15,10 @@ export const contactKeys = {
 export function useAdminContacts() {
   return useQuery({
     queryKey: contactKeys.admin(),
-    queryFn: () => api.get<ContactSubmission[]>('/contact'),
+    queryFn: () =>
+      api
+        .get<PaginatedResponse<ContactSubmission>>('/contact')
+        .then((res) => res.items),
   });
 }
 
