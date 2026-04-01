@@ -5,7 +5,10 @@
  * Handles authentication cookies automatically.
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// Use relative URL so requests go through Next.js rewrite proxy.
+// This ensures cookies are set on the same domain (no cross-origin issues).
+// The actual backend URL is configured in next.config.js rewrites.
+const API_BASE_URL = '';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
