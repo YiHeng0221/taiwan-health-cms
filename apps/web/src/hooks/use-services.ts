@@ -6,7 +6,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { ServiceEntity } from '@taiwan-health/shared-types';
+import type { ServiceEntity, PaginatedResponse } from '@taiwan-health/shared-types';
 
 export const serviceKeys = {
   all: ['services'] as const,
@@ -27,7 +27,10 @@ export function useServices() {
 export function useAdminServices() {
   return useQuery({
     queryKey: serviceKeys.admin(),
-    queryFn: () => api.get<ServiceEntity[]>('/services/admin'),
+    queryFn: () =>
+      api
+        .get<PaginatedResponse<ServiceEntity>>('/services/admin')
+        .then((res) => res.items),
   });
 }
 

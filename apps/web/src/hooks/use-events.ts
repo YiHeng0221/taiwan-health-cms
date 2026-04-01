@@ -4,7 +4,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { Event } from '@taiwan-health/shared-types';
+import { Event, PaginatedResponse } from '@taiwan-health/shared-types';
 
 export const eventKeys = {
   all: ['events'] as const,
@@ -17,7 +17,8 @@ export const eventKeys = {
 export function usePublicEvents() {
   return useQuery({
     queryKey: eventKeys.published(),
-    queryFn: () => api.get<Event[]>('/events'),
+    queryFn: () =>
+      api.get<PaginatedResponse<Event>>('/events').then((res) => res.items),
   });
 }
 
@@ -25,7 +26,8 @@ export function usePublicEvents() {
 export function useAdminEvents() {
   return useQuery({
     queryKey: eventKeys.admin(),
-    queryFn: () => api.get<Event[]>('/events/admin'),
+    queryFn: () =>
+      api.get<PaginatedResponse<Event>>('/events/admin').then((res) => res.items),
   });
 }
 
