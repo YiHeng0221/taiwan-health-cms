@@ -8,6 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators';
 import { UserRole } from '@taiwan-health/shared-types';
+import { UserRole as PrismaUserRole } from '@prisma/client';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,6 +34,10 @@ export class UsersController {
   async create(
     @Body() body: { email: string; password: string; role?: string },
   ) {
-    return this.usersService.create(body);
+    return this.usersService.create({
+      email: body.email,
+      password: body.password,
+      role: body.role as PrismaUserRole | undefined,
+    });
   }
 }
