@@ -26,6 +26,7 @@ import {
   GripVertical,
 } from 'lucide-react';
 import { ICON_OPTIONS, getIcon } from './icon-picker';
+import { ImageCropper } from './image-cropper';
 
 // ─── Default data ───────────────────────────────────────
 const defaultSections: AboutSection[] = [
@@ -97,9 +98,20 @@ function HeroEditor({
   onChange: (c: HeroSectionConfig) => void;
 }) {
   const uploadImage = useUploadImage('settings');
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setRawImageSrc(reader.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
+    setRawImageSrc(null);
+    const file = new File([blob], 'hero-cropped.webp', { type: 'image/webp' });
     const result = await uploadImage.mutateAsync(file);
     onChange({ ...config, image: result.url });
   };
@@ -134,7 +146,6 @@ function HeroEditor({
                 alt="Hero"
                 fill
                 className="object-cover"
-                style={{ objectPosition: config.imagePosition || 'center' }}
               />
               <button
                 onClick={() => onChange({ ...config, image: '' })}
@@ -149,25 +160,18 @@ function HeroEditor({
             <span className="text-sm text-gray-600">
               {uploadImage.isPending ? '上傳中...' : '上傳圖片'}
             </span>
-            <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+            <input type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
           </label>
         </div>
       </div>
-      {config.image && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">圖片顯示位置</label>
-          <select
-            value={config.imagePosition || 'center'}
-            onChange={(e) =>
-              onChange({ ...config, imagePosition: e.target.value as 'top' | 'center' | 'bottom' })
-            }
-            className="input w-auto"
-          >
-            <option value="top">頂部</option>
-            <option value="center">中央</option>
-            <option value="bottom">底部</option>
-          </select>
-        </div>
+
+      {rawImageSrc && (
+        <ImageCropper
+          imageSrc={rawImageSrc}
+          aspect={16 / 9}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setRawImageSrc(null)}
+        />
       )}
     </div>
   );
@@ -595,7 +599,6 @@ function AboutPreview({ sections }: { sections: AboutSection[] }) {
                         alt={c.title}
                         fill
                         className="object-cover"
-                        style={{ objectPosition: c.imagePosition || 'center' }}
                       />
                     ) : (
                       <div className="flex items-center justify-center h-full text-gray-400">

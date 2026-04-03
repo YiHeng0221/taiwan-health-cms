@@ -65,7 +65,7 @@ const defaultSections: AboutSection[] = [
 
 function HeroSection({ config }: { config: HeroSectionConfig }) {
   return (
-    <section className="container-custom">
+    <section className="container-custom py-8">
       <div className="grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h1 className="text-4xl font-bold mb-6">{config.title}</h1>
@@ -80,7 +80,6 @@ function HeroSection({ config }: { config: HeroSectionConfig }) {
               alt={config.title}
               fill
               className="object-cover"
-              style={{ objectPosition: config.imagePosition || 'center' }}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
