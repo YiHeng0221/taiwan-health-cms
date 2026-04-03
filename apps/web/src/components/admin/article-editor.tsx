@@ -13,10 +13,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useCreateArticle, useUpdateArticle } from '@/hooks/use-articles';
+import { useTags, Tag } from '@/hooks/use-tags';
 import { Article, TiptapContent, CreateArticleDto } from '@taiwan-health/shared-types';
 import { TiptapEditor } from './tiptap-editor';
 import { cn } from '@/lib/utils';
-import { Loader2, Save, Eye } from 'lucide-react';
+import { Loader2, Save, Eye, X } from 'lucide-react';
 
 const articleSchema = z.object({
   title: z.string().min(1, '請輸入標題').max(200, '標題最多200個字元'),
@@ -43,8 +44,19 @@ export function ArticleEditor({ article }: Props) {
     }
   );
 
+  // Extract existing tag IDs from article
+  const existingTagIds = (article as any)?.tags?.map((at: any) => at.tag?.id || at.tagId).filter(Boolean) || [];
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>(existingTagIds);
+
+  const { data: allTags } = useTags();
   const createArticle = useCreateArticle();
   const updateArticle = useUpdateArticle();
+
+  const toggleTag = (tagId: string) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]
+    );
+  };
 
   const {
     register,
@@ -66,6 +78,7 @@ export function ArticleEditor({ article }: Props) {
     const payload = {
       ...data,
       content,
+      tagIds: selectedTagIds,
     };
 
     if (isEditing) {
@@ -146,6 +159,34 @@ export function ArticleEditor({ article }: Props) {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* Tags */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="font-semibold mb-4">標籤</h2>
+            {allTags && allTags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {allTags.map((tag: Tag) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => toggleTag(tag.id)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      selectedTagIds.includes(tag.id)
+                        ? 'bg-brand-yellow text-brand-dark'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {tag.name}
+                    {selectedTagIds.includes(tag.id) && (
+                      <X className="inline h-3 w-3 ml-1" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">尚無標籤，請先到標籤管理新增</p>
+            )}
           </div>
 
           {/* SEO Settings */}

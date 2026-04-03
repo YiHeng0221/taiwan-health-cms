@@ -27,6 +27,7 @@ interface ArticleListParams {
   page?: number;
   pageSize?: number;
   search?: string;
+  tagId?: string;
 }
 
 /**
