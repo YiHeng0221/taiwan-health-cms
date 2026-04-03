@@ -25,4 +25,8 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsObject({ message: '聯絡資訊配置格式錯誤' })
   contact?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject({ message: '關於我們頁面配置格式錯誤' })
+  aboutPage?: Record<string, unknown>;
 }

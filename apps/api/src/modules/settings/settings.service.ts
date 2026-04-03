@@ -35,6 +35,7 @@ export class SettingsService {
     if (dto.footer !== undefined) data.footer = dto.footer as Prisma.InputJsonValue;
     if (dto.social !== undefined) data.social = dto.social as Prisma.InputJsonValue;
     if (dto.contact !== undefined) data.contact = dto.contact as Prisma.InputJsonValue;
+    if (dto.aboutPage !== undefined) data.aboutPage = dto.aboutPage as Prisma.InputJsonValue;
 
     return this.prisma.siteSettings.upsert({
       where: { id: 'default' },

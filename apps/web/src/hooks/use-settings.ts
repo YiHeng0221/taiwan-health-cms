@@ -25,6 +25,16 @@ export interface SiteSettings {
     email?: string;
     address?: string;
   } | null;
+  aboutPage: AboutPageConfig | null;
+}
+
+export interface AboutPageConfig {
+  heroTitle: string;
+  heroDescription: string;
+  heroImage?: string;
+  mission: string;
+  vision: string;
+  values: { title: string; description: string }[];
 }
 
 export const settingsKeys = {

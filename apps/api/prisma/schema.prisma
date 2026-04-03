@@ -198,6 +198,7 @@ model SiteSettings {
   footer    Json?    // Footer configuration
   social    Json?    // Social media links
   contact   Json?    // Contact information
+  aboutPage Json?    // About page CMS content
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
