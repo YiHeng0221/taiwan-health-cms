@@ -111,16 +111,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="bg-brand-yellow text-brand-dark py-16">
-        <div className="container-custom text-center">
-          <h2 className="text-3xl font-bold mb-4">專業團隊</h2>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            我們擁有醫師、營養師、運動教練、心理諮商師等多元專業團隊，
-            以跨領域整合的方式，為您提供最完善的健康服務。
-          </p>
-        </div>
-      </section>
     </div>
     </>
   );
