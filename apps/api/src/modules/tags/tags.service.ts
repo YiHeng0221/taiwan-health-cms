@@ -117,10 +117,17 @@ export class TagsService {
    * Generate URL-friendly slug from name
    */
   private generateSlug(name: string): string {
-    return slugify(name, {
+    const slug = slugify(name, {
       lower: true,
       strict: true,
       locale: 'zh-TW',
     });
+
+    // slugify returns empty string for pure CJK text — fall back to timestamp
+    if (!slug) {
+      return `tag-${Date.now()}`;
+    }
+
+    return slug;
   }
 }

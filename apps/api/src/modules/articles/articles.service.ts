@@ -226,11 +226,18 @@ export class ArticlesService {
    * Generate URL-friendly slug from title
    */
   private generateSlug(title: string): string {
-    return slugify(title, {
+    const slug = slugify(title, {
       lower: true,
       strict: true,
       locale: 'zh-TW',
     });
+
+    // slugify returns empty string for pure CJK titles — fall back to timestamp
+    if (!slug) {
+      return `article-${Date.now()}`;
+    }
+
+    return slug;
   }
 
   /**
