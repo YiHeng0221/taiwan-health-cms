@@ -29,12 +29,37 @@ export interface SiteSettings {
 }
 
 export interface AboutPageConfig {
-  heroTitle: string;
-  heroDescription: string;
-  heroImage?: string;
-  mission: string;
-  vision: string;
-  values: { title: string; description: string }[];
+  sections: AboutSection[];
+}
+
+export interface AboutSection {
+  id: string;
+  type: 'hero' | 'cards' | 'icon-grid' | 'text';
+  config: HeroSectionConfig | CardsSectionConfig | IconGridSectionConfig | TextSectionConfig;
+}
+
+export interface HeroSectionConfig {
+  title: string;
+  description: string;
+  image?: string;
+  imagePosition: 'top' | 'center' | 'bottom';
+}
+
+export interface CardsSectionConfig {
+  title: string;
+  bgColor: 'white' | 'gray';
+  items: { title: string; description: string }[];
+}
+
+export interface IconGridSectionConfig {
+  title: string;
+  columns: 2 | 3 | 4;
+  items: { icon: string; title: string; description: string }[];
+}
+
+export interface TextSectionConfig {
+  title: string;
+  content: string;
 }
 
 export const settingsKeys = {
