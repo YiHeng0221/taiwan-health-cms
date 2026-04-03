@@ -8,10 +8,38 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { HomeSection, CarouselConfig } from '@taiwan-health/shared-types';
+import { HomeSection, CarouselConfig, CarouselItem } from '@taiwan-health/shared-types';
+
+function SlideContent({ item, title }: { item: CarouselItem; title: string }) {
+  const inner = (
+    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+      {item.image ? (
+        <Image
+          src={item.image}
+          alt={item.title || title}
+          fill
+          className="object-contain"
+        />
+      ) : (
+        <div className="w-full h-full bg-brand-brown/10 rounded-2xl" />
+      )}
+    </div>
+  );
+
+  if (item.url) {
+    return (
+      <Link href={item.url} className="block cursor-pointer">
+        {inner}
+      </Link>
+    );
+  }
+
+  return inner;
+}
 
 interface Props {
   section: HomeSection;
@@ -58,6 +86,7 @@ export function CarouselSection({ section }: Props) {
 
   if (config.items.length === 0) return null;
 
+  const isSingle = config.items.length === 1;
   const currentItem = config.items[selectedIndex];
 
   return (
@@ -70,71 +99,85 @@ export function CarouselSection({ section }: Props) {
         </div>
       </div>
 
-      {/* Embla — follows demo structure exactly */}
-      <div className="embla">
-        <div className="embla__viewport overflow-hidden" ref={emblaRef}>
-          <div className="embla__container flex">
-            {config.items.map((item, index) => (
-              <div
-                key={index}
-                className="embla__slide embla__slide--responsive"
-                style={{
-                  minWidth: 0,
-                  paddingLeft: '1rem',
-                }}
-              >
-                {/* Inner content — scale/opacity here, not on slide itself */}
-                <div
-                  className="transition-[transform,opacity] duration-300 origin-center"
-                  style={{
-                    transform: index === selectedIndex ? 'scale(1)' : 'scale(0.88)',
-                    opacity: index === selectedIndex ? 1 : 0.4,
-                  }}
-                >
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.title || config.title}
-                        fill
-                        className="object-contain"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-brand-brown/10 rounded-2xl" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+      {isSingle ? (
+        /* Single item — centered, no carousel */
         <div className="container-custom">
-          {/* Item title (if present) */}
-          {currentItem?.title && (
+          <div className="max-w-2xl mx-auto">
+            <SlideContent item={config.items[0]} title={config.title} />
+          </div>
+          {config.items[0].title && (
             <p className="text-center text-brand-dark mt-6 text-sm md:text-base leading-relaxed">
-              {currentItem.title}
+              {config.items[0].url ? (
+                <Link href={config.items[0].url} className="hover:text-brand-yellow transition-colors underline underline-offset-4">
+                  {config.items[0].title}
+                </Link>
+              ) : (
+                config.items[0].title
+              )}
             </p>
           )}
-
-          {/* Dots */}
-          {scrollSnaps.length > 1 && (
-            <div className="flex justify-center gap-2 mt-4">
-              {scrollSnaps.map((_, index) => (
-                <button
+        </div>
+      ) : (
+        /* Multiple items — embla carousel */
+        <div className="embla">
+          <div className="embla__viewport overflow-hidden" ref={emblaRef}>
+            <div className="embla__container flex">
+              {config.items.map((item, index) => (
+                <div
                   key={index}
-                  onClick={() => onDotButtonClick(index)}
-                  aria-label={`前往第 ${index + 1} 張`}
-                  className={`w-3 h-3 rounded-full transition-colors ${index === selectedIndex
-                    ? 'bg-brand-dark'
-                    : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                />
+                  className="embla__slide embla__slide--responsive"
+                  style={{
+                    minWidth: 0,
+                    paddingLeft: '1rem',
+                  }}
+                >
+                  <div
+                    className="transition-[transform,opacity] duration-300 origin-center"
+                    style={{
+                      transform: index === selectedIndex ? 'scale(1)' : 'scale(0.88)',
+                      opacity: index === selectedIndex ? 1 : 0.4,
+                    }}
+                  >
+                    <SlideContent item={item} title={config.title} />
+                  </div>
+                </div>
               ))}
             </div>
-          )}
+          </div>
+
+          <div className="container-custom">
+            {/* Item title (if present) */}
+            {currentItem?.title && (
+              <p className="text-center text-brand-dark mt-6 text-sm md:text-base leading-relaxed">
+                {currentItem.url ? (
+                  <Link href={currentItem.url} className="hover:text-brand-yellow transition-colors underline underline-offset-4">
+                    {currentItem.title}
+                  </Link>
+                ) : (
+                  currentItem.title
+                )}
+              </p>
+            )}
+
+            {/* Dots */}
+            {scrollSnaps.length > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                {scrollSnaps.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => onDotButtonClick(index)}
+                    aria-label={`前往第 ${index + 1} 張`}
+                    className={`w-3 h-3 rounded-full transition-colors ${index === selectedIndex
+                      ? 'bg-brand-dark'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
