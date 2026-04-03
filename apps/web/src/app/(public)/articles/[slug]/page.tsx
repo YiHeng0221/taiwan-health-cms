@@ -9,6 +9,9 @@ import { cache } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArticleContent } from '@/components/articles/article-content';
+import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 interface Props {
   params: { slug: string };
@@ -51,5 +54,24 @@ export default async function ArticlePage({ params }: Props) {
     notFound();
   }
 
-  return <ArticleContent article={article} />;
+  return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '運動專欄', url: `${SITE_URL}/articles` },
+          { name: article.title, url: `${SITE_URL}/articles/${article.slug}` },
+        ]}
+      />
+      <ArticleJsonLd
+        title={article.title}
+        description={article.metaDescription}
+        datePublished={article.createdAt}
+        dateModified={article.updatedAt}
+        image={article.coverImage}
+        url={`${SITE_URL}/articles/${article.slug}`}
+      />
+      <ArticleContent article={article} />
+    </>
+  );
 }

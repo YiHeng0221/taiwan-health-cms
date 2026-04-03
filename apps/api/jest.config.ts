@@ -1,0 +1,19 @@
+import type { Config } from 'jest';
+
+const config: Config = {
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: '.',
+  testRegex: '.*\\.spec\\.ts$',
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  collectCoverageFrom: ['src/**/*.ts', '!src/main.ts', '!src/**/*.module.ts', '!src/**/*.dto.ts'],
+  coverageDirectory: './coverage',
+  testEnvironment: 'node',
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@prisma/client$': '<rootDir>/node_modules/@prisma/client',
+  },
+};
+
+export default config;

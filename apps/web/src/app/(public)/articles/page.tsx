@@ -7,6 +7,9 @@
 
 import type { Metadata } from 'next';
 import { ArticleList } from '@/components/articles/article-list';
+import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 export const metadata: Metadata = {
   title: '運動專欄',
@@ -19,6 +22,13 @@ export const metadata: Metadata = {
 
 export default function ArticlesPage() {
   return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '運動專欄', url: `${SITE_URL}/articles` },
+        ]}
+      />
     <div className="container-custom py-12">
       {/* Page Header */}
       <div className="text-center mb-12">
@@ -31,5 +41,6 @@ export default function ArticlesPage() {
       {/* Article List */}
       <ArticleList />
     </div>
+    </>
   );
 }

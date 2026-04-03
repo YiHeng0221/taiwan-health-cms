@@ -23,6 +23,8 @@ import { UsersModule } from './modules/users/users.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ServicesModule } from './modules/services/services.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { FaqModule } from './modules/faq/faq.module';
+import { TagsModule } from './modules/tags/tags.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 @Module({
@@ -52,6 +54,8 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     UploadModule,
     ServicesModule,
     SettingsModule,
+    FaqModule,
+    TagsModule,
   ],
   providers: [
     // Global JWT auth guard: all routes require authentication by default

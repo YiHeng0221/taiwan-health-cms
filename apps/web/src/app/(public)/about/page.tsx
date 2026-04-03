@@ -5,6 +5,9 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Award, Target, Heart, Users } from 'lucide-react';
+import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 export const metadata: Metadata = {
   title: '關於我們',
@@ -36,6 +39,13 @@ const values = [
 
 export default function AboutPage() {
   return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '關於我們', url: `${SITE_URL}/about` },
+        ]}
+      />
     <div className="py-12">
       {/* Hero Section */}
       <section className="container-custom">
@@ -112,5 +122,6 @@ export default function AboutPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

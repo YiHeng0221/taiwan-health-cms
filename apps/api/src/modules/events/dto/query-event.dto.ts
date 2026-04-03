@@ -1,4 +1,4 @@
-import { IsOptional, IsBoolean, IsInt, Min, Max, IsString } from 'class-validator';
+import { IsOptional, IsBoolean, IsInt, Min, Max, IsString, MaxLength } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
 export class QueryEventDto {
@@ -26,5 +26,6 @@ export class QueryEventDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(200, { message: '搜尋字串最多200個字元' })
   search?: string;
 }

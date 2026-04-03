@@ -7,7 +7,9 @@
 
 import { useMutation } from '@tanstack/react-query';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// Use relative URL so requests go through Next.js rewrite proxy.
+// This ensures cookies are sent on the same domain (no cross-origin issues).
+const API_BASE_URL = '';
 
 interface UploadResponse {
   url: string;

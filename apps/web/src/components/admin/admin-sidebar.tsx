@@ -17,6 +17,8 @@ import {
   X,
   Briefcase,
   Users,
+  Tag,
+  HelpCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-auth';
@@ -26,9 +28,11 @@ import { useSidebarStore } from '@/stores/sidebar-store';
 const navigation = [
   { name: '儀表板', href: adminPath(), icon: LayoutDashboard },
   { name: '文章管理', href: adminPath('/articles'), icon: FileText },
+  { name: '標籤管理', href: adminPath('/tags'), icon: Tag },
   { name: '首頁區塊', href: adminPath('/home-sections'), icon: Home },
   { name: '活動管理', href: adminPath('/events'), icon: Calendar },
   { name: '服務管理', href: adminPath('/services'), icon: Briefcase },
+  { name: '常見問題', href: adminPath('/faq'), icon: HelpCircle },
   { name: '聯絡訊息', href: adminPath('/contacts'), icon: Mail },
   { name: '用戶管理', href: adminPath('/users'), icon: Users },
   { name: '網站設定', href: adminPath('/settings'), icon: Settings },

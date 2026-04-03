@@ -95,8 +95,8 @@ export class HomeSectionsService {
    * Reorder sections
    */
   async reorder(orderedIds: string[]): Promise<HomeSection[]> {
-    // Update each section's order based on array position
-    await Promise.all(
+    // Use transaction to ensure atomic reorder
+    await this.prisma.$transaction(
       orderedIds.map((id, index) =>
         this.prisma.homeSection.update({
           where: { id },

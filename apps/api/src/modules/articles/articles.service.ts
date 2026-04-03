@@ -48,6 +48,14 @@ export class ArticlesService {
         metaDescription: dto.metaDescription,
         isPublished: dto.isPublished ?? false,
         authorId,
+        ...(dto.tagIds?.length && {
+          tags: {
+            create: dto.tagIds.map((tagId) => ({ tagId })),
+          },
+        }),
+      },
+      include: {
+        tags: { include: { tag: true } },
       },
     });
   }
@@ -59,7 +67,7 @@ export class ArticlesService {
   async findAll(
     query: QueryArticleDto,
   ): Promise<PaginatedResponse<ArticleListItem>> {
-    const { page = 1, pageSize = 10, isPublished, search } = query;
+    const { page = 1, pageSize = 10, isPublished, search, tagId } = query;
     const skip = (page - 1) * pageSize;
 
     // Build where clause
@@ -74,6 +82,12 @@ export class ArticlesService {
         { title: { contains: search, mode: 'insensitive' } },
         { metaDescription: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    if (tagId) {
+      where.tags = {
+        some: { tagId },
+      };
     }
 
     // Execute count and find in parallel
@@ -91,6 +105,9 @@ export class ArticlesService {
           coverImage: true,
           isPublished: true,
           createdAt: true,
+          tags: {
+            include: { tag: true },
+          },
         },
       }),
     ]);
@@ -110,6 +127,9 @@ export class ArticlesService {
   async findBySlug(slug: string): Promise<Article> {
     const article = await this.prisma.article.findUnique({
       where: { slug },
+      include: {
+        tags: { include: { tag: true } },
+      },
     });
 
     if (!article) {
@@ -125,6 +145,9 @@ export class ArticlesService {
   async findById(id: string): Promise<Article> {
     const article = await this.prisma.article.findUnique({
       where: { id },
+      include: {
+        tags: { include: { tag: true } },
+      },
     });
 
     if (!article) {
@@ -155,12 +178,26 @@ export class ArticlesService {
       }
     }
 
+    // Extract tagIds before spreading dto into data
+    const { tagIds, ...articleData } = dto;
+
     return this.prisma.article.update({
       where: { id },
       data: {
-        ...dto,
+        ...articleData,
         content: dto.content as unknown as Prisma.InputJsonValue,
         coverImage: dto.coverImage || this.extractFirstImage(dto.content),
+        ...(tagIds !== undefined && {
+          tags: {
+            deleteMany: {},
+            ...(tagIds.length && {
+              create: tagIds.map((tagId) => ({ tagId })),
+            }),
+          },
+        }),
+      },
+      include: {
+        tags: { include: { tag: true } },
       },
     });
   }

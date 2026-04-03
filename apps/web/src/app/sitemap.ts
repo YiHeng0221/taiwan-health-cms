@@ -32,5 +32,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Silently fail — static pages still get indexed
   }
 
-  return [...staticPages, ...articlePages];
+  // Fetch published events
+  let eventPages: MetadataRoute.Sitemap = [];
+  try {
+    const res = await fetch(`${API_URL}/api/events?pageSize=100`, {
+      next: { revalidate: 3600 },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      eventPages = (data.items || []).map((event: { slug: string; date: string }) => ({
+        url: `${SITE_URL}/events/${event.slug}`,
+        lastModified: new Date(event.date),
+        changeFrequency: 'monthly' as const,
+        priority: 0.5,
+      }));
+    }
+  } catch {
+    // Silently fail
+  }
+
+  // Add FAQ page
+  const faqPage: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+  ];
+
+  return [...staticPages, ...articlePages, ...eventPages, ...faqPage];
 }

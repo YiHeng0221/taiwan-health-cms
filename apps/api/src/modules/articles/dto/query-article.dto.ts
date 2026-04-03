@@ -2,7 +2,7 @@
  * @fileoverview Query Parameters DTO for Article Listing
  */
 
-import { IsOptional, IsBoolean, IsInt, Min, Max, IsString } from 'class-validator';
+import { IsOptional, IsBoolean, IsInt, Min, Max, IsString, MaxLength, IsUUID } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
 export class QueryArticleDto {
@@ -30,5 +30,10 @@ export class QueryArticleDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(200, { message: '搜尋字串最多200個字元' })
   search?: string;
+
+  @IsOptional()
+  @IsUUID('4', { message: '標籤 ID 格式錯誤' })
+  tagId?: string;
 }

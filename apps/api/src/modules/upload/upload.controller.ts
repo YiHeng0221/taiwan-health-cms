@@ -17,6 +17,7 @@ import {
   Body,
   BadRequestException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { memoryStorage } from 'multer';
@@ -38,6 +39,7 @@ export class UploadController {
    * POST /api/upload/image?folder=articles
    */
   @Post('image')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
@@ -67,6 +69,7 @@ export class UploadController {
    * POST /api/upload/images?folder=events
    */
   @Post('images')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: memoryStorage(),

@@ -7,6 +7,7 @@
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { LineFloatButton } from '@/components/layout/line-float-button';
 
 export default function PublicLayout({
   children,
@@ -18,6 +19,7 @@ export default function PublicLayout({
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <LineFloatButton />
     </div>
   );
 }

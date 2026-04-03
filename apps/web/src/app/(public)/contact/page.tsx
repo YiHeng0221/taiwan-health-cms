@@ -5,6 +5,9 @@
 import type { Metadata } from 'next';
 import { ContactForm } from '@/components/contact/contact-form';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 export const metadata: Metadata = {
   title: '聯絡我們',
@@ -40,6 +43,13 @@ const contactInfo = [
 
 export default function ContactPage() {
   return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '聯絡我們', url: `${SITE_URL}/contact` },
+        ]}
+      />
     <div className="py-12">
       <div className="container-custom">
         {/* Header */}
@@ -81,5 +91,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

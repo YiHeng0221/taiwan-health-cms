@@ -16,6 +16,9 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useServices } from '@/hooks/use-services';
+import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 /** Map icon name → Lucide component */
 const iconMap: Record<string, LucideIcon> = {
@@ -31,6 +34,13 @@ export default function ServicesPage() {
   const { data: services, isLoading, error } = useServices();
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '服務項目', url: `${SITE_URL}/services` },
+        ]}
+      />
     <div className="py-12">
       {/* Hero Section */}
       <section className="bg-brand-yellow text-white py-20">
@@ -119,5 +129,6 @@ export default function ServicesPage() {
         </div>
       </section>
     </div>
+    </>
   );
 }

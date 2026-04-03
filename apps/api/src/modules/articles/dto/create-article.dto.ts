@@ -9,6 +9,8 @@ import {
   IsBoolean,
   MaxLength,
   IsObject,
+  IsArray,
+  IsUUID,
 } from 'class-validator';
 import { TiptapContent } from '@taiwan-health/shared-types';
 
@@ -39,4 +41,9 @@ export class CreateArticleDto {
   @IsBoolean({ message: '發布狀態必須為布林值' })
   @IsOptional()
   isPublished?: boolean;
+
+  @IsArray({ message: '標籤必須為陣列' })
+  @IsUUID('4', { each: true, message: '標籤 ID 格式錯誤' })
+  @IsOptional()
+  tagIds?: string[];
 }

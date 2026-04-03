@@ -4,6 +4,9 @@
 
 import type { Metadata } from 'next';
 import { EventsList } from '@/components/events/events-list';
+import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.leyisheng.com';
 
 export const metadata: Metadata = {
   title: '活動花絮',
@@ -12,6 +15,13 @@ export const metadata: Metadata = {
 
 export default function EventsPage() {
   return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: '首頁', url: SITE_URL },
+          { name: '活動花絮', url: `${SITE_URL}/events` },
+        ]}
+      />
     <div className="py-12">
       {/* Header */}
       <section className="container-custom text-center mb-12">
@@ -26,5 +36,6 @@ export default function EventsPage() {
         <EventsList />
       </section>
     </div>
+    </>
   );
 }
