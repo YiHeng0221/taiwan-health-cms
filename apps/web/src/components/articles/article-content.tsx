@@ -163,19 +163,6 @@ export function ArticleContent({ article }: Props) {
         <p className="text-gray-500">{formatDate(article.createdAt)}</p>
       </header>
 
-      {/* Cover Image */}
-      {article.coverImage && (
-        <div className="relative h-96 mb-8 rounded-xl overflow-hidden bg-gray-100">
-          <Image
-            src={article.coverImage}
-            alt={article.title}
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
-      )}
-
       {/* Article Content */}
       <div className="prose prose-lg max-w-none">
         {article.content?.content && renderContent(article.content.content)}
