@@ -129,8 +129,8 @@ export function ArticleList() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article) => (
             <Link key={article.id} href={`/articles/${article.slug}`}>
-              <article className="card group hover:shadow-lg transition-shadow">
-                <div className="relative h-48 bg-gray-100">
+              <article className="card group hover:shadow-lg transition-shadow h-full flex flex-col">
+                <div className="relative h-48 bg-gray-100 shrink-0">
                   {article.coverImage ? (
                     <Image
                       src={article.coverImage}
@@ -144,7 +144,7 @@ export function ArticleList() {
                     </div>
                   )}
                 </div>
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1">
                   {/* Tags */}
                   {(article as any).tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-2">
@@ -161,7 +161,7 @@ export function ArticleList() {
                   <h2 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-brand-yellow transition-colors line-clamp-2">
                     {article.title}
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 mt-auto">
                     {formatDate(article.createdAt)}
                   </p>
                 </div>
