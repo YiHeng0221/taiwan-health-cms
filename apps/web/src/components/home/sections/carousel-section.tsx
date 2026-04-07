@@ -87,7 +87,16 @@ export function CarouselSection({ section }: Props) {
   if (config.items.length === 0) return null;
 
   const isSingle = config.items.length === 1;
-  const currentItem = config.items[selectedIndex];
+
+  // Embla loop mode needs enough slides to fill the viewport.
+  // With 50% slide width, 2 slides aren't enough — duplicate them.
+  const displayItems =
+    config.items.length === 2
+      ? [...config.items, ...config.items]
+      : config.items;
+  const realCount = config.items.length;
+  const realIndex = isSingle ? 0 : selectedIndex % realCount;
+  const currentItem = config.items[realIndex];
 
   return (
     <section className="py-16">
@@ -122,7 +131,7 @@ export function CarouselSection({ section }: Props) {
         <div className="embla">
           <div className="embla__viewport overflow-hidden" ref={emblaRef}>
             <div className="embla__container flex">
-              {config.items.map((item, index) => (
+              {displayItems.map((item, index) => (
                 <div
                   key={index}
                   className="embla__slide embla__slide--responsive"
@@ -159,15 +168,15 @@ export function CarouselSection({ section }: Props) {
               </p>
             )}
 
-            {/* Dots */}
-            {scrollSnaps.length > 1 && (
+            {/* Dots — show only real item count */}
+            {realCount > 1 && (
               <div className="flex justify-center gap-2 mt-4">
-                {scrollSnaps.map((_, index) => (
+                {Array.from({ length: realCount }).map((_, index) => (
                   <button
                     key={index}
                     onClick={() => onDotButtonClick(index)}
                     aria-label={`前往第 ${index + 1} 張`}
-                    className={`w-3 h-3 rounded-full transition-colors ${index === selectedIndex
+                    className={`w-3 h-3 rounded-full transition-colors ${index === realIndex
                       ? 'bg-brand-dark'
                       : 'bg-gray-300 hover:bg-gray-400'
                       }`}
