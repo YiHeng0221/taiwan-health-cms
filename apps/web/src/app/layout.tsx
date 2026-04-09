@@ -37,6 +37,9 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'zh_TW',
       siteName,
     },
+    verification: {
+      google: '1grt9fPAVp1SbQ8_28EbFTxUqB-3FzzVw0qBLyn-PW4',
+    },
     icons: settings?.favicon
       ? { icon: settings.favicon, apple: settings.favicon }
       : undefined,
